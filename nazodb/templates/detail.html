@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<div class="alert alert-primary" role="alert">
+  detail
+</div>
+{% endblock header %}
+
+{% block content %}
+<div class="alert alert-primary" role="alert">
+<p>タイトル：{{ object.name }}</p>
+<p>作成者：{{ object.creator }}</p>
+<img src="{{ object.image.url }}" alt="Image">
+<a class="btn btn-primary" href="{% url 'good' object.pk %}" role="button">いいね{{ object.good }}</a>
+<a class="btn btn-primary" href="{% url 'read' object.pk %}" role="button">既読{{ object.read }}</a>
+</div>
+{% endblock content %}

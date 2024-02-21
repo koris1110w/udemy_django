@@ -89,3 +89,6 @@ class RiddleUpdate(UpdateView):
 class CreatorDetail(DetailView):
     template_name = 'creator.html'
     model = CreatorModel
+
+
+#根岸修正

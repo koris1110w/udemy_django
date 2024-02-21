@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h3 class="display-4">謎解きデータベース</h3>
+    </div>
+</div>
+{% endblock header %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<div class="container">
+    <a class="btn btn-primary mb-2" href="{% url 'create' %}" role="button">新規作成</a>
+    {% for object in object_list %}
+    <div class="alert alert-primary" role="alert">
+    <p>タイトル：{{ object.name }}</p>
+    <p>作成者：{{ object.creator }}</p>
+    <a class="btn btn-primary" href="{% url 'update' object.pk%}" role="button">編集</a>
+    <a class="btn btn-primary" href="{% url 'delete' object.pk %}" role="button">削除</a>
+    <a class="btn btn-primary" href="{% url 'detail' object.pk%}" role="button">詳細</a>
+    </div>
+    {% endfor %}
+    <a href="{% url 'logout' %}">logout</a>
+</div>
+{% else %}
+<p>please login</p>
+{% endif %}
+{% endblock content %}

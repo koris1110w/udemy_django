@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 class CreatorModel(models.Model):
     name = models.CharField(max_length=120)
@@ -33,6 +35,7 @@ class RiddleModel(models.Model):
     good =models.IntegerField(null=True, blank=True, default=0)
     read =models.IntegerField(null=True, blank=True, default=0)
     readtext =models.TextField(null=True, blank=True, default='')
+    bookmarks = models.ManyToManyField(User, verbose_name="ブックマークユーザー", blank=True)
 
     def __str__(self):
         return self.name

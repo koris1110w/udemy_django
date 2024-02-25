@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from .views import signupfunc, loginfunc, listfunc, logoutfunc, detailfunc, goodfunc, readfunc, RiddleList, RiddleDetail, RiddleCreate, RiddleDelete, RiddleUpdate
+from .views import signupfunc, loginfunc, listfunc, logoutfunc, detailfunc, goodfunc, readfunc, creatorfunc, bookmarkfunc, RiddleList, RiddleDetail, RiddleCreate, RiddleDelete, RiddleUpdate
 
 urlpatterns = [
     path('signup/', signupfunc, name='signup'),
@@ -15,4 +15,6 @@ urlpatterns = [
     path('update/<int:pk>', RiddleUpdate.as_view(), name='update'),
     path('good/<int:pk>', goodfunc, name='good'),
     path('read/<int:pk>', readfunc, name='read'),
+    path('creator/<int:pk>', creatorfunc, name='creator'),
+    path('bookmark/<int:pk>', bookmarkfunc, name='bookmark'),
 ]

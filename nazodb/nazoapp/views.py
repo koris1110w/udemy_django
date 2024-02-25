@@ -61,6 +61,18 @@ def readfunc(request, pk):
         object.save()
         return redirect('detail', pk=pk)
 
+def bookmarkfunc(request, pk):
+    object = RiddleModel.objects.get(pk=pk)
+    # アクセスしたユーザーをbookmarksに追加する
+    object.bookmarks.add(request.user)
+    object.save()
+    return redirect('detail', pk=pk)
+
+def creatorfunc(request, pk):
+    creator = get_object_or_404(CreatorModel, pk=pk)
+    object_list = RiddleModel.objects.filter(creator=creator)
+    return render(request, 'creator.html', {'creator': creator ,'object_list': object_list})
+
 class RiddleList(ListView):
     template_name = 'list.html'
     model = RiddleModel

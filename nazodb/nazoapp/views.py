@@ -39,6 +39,10 @@ def logoutfunc(request):
     logout(request)
     return redirect('login')
 
+def mypagefunc(request):
+    object_list = RiddleModel.objects.filter(bookmarks=request.user.pk)
+    return render(request, 'mypage.html', {'object_list': object_list})
+
 # @login_required
 def listfunc(request):
     object_list = RiddleModel.objects.all()

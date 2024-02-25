@@ -32,10 +32,11 @@ class RiddleModel(models.Model):
     end_date = models.DateField()
     creator = models.ForeignKey(CreatorModel, on_delete=models.CASCADE)
     url = models.CharField(max_length=255)
-    good =models.IntegerField(null=True, blank=True, default=0)
-    read =models.IntegerField(null=True, blank=True, default=0)
-    readtext =models.TextField(null=True, blank=True, default='')
+    # good =models.IntegerField(null=True, blank=True, default=0)
+    # read =models.IntegerField(null=True, blank=True, default=0)
+    # readtext =models.TextField(null=True, blank=True, default='')
     bookmarks = models.ManyToManyField(User, verbose_name="ブックマークユーザー", blank=True)
+    playings = models.IntegerField(null=True, blank=True, default=0)
 
     def __str__(self):
         return self.name

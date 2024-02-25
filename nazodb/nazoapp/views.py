@@ -1,4 +1,5 @@
 from .models import RiddleModel, CreatorModel
+from .forms import UserForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
@@ -8,20 +9,23 @@ from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 
 def signupfunc(request):
-    if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
+    form = UserForm(request.POST)  
+    if form.is_valid():  
+        username = form.cleaned_data['username']  
+        password = form.cleaned_data['password']
         try:
             user = User.objects.create_user(username, '', password)
             return render(request, 'signup.html', {})
         except IntegrityError:
             return render(request, 'signup.html', {"error":'このユーザーはすでに登録されています'})
-    return render(request, 'signup.html', {})
+    else:
+        return render(request, 'signup.html', {})
 
 def loginfunc(request):
-    if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
+    form = UserForm(request.POST)  
+    if form.is_valid():  
+        username = form.cleaned_data['username']  
+        password = form.cleaned_data['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
@@ -30,7 +34,7 @@ def loginfunc(request):
             return render(request, 'login.html', {})
     else:
         return render(request, 'login.html', {})
-    
+
 def logoutfunc(request):
     logout(request)
     return redirect('login')

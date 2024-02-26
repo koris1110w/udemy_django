@@ -1,5 +1,5 @@
 from .models import RiddleModel, CreatorModel
-from .forms import UserForm
+from .forms import UserForm, FilterListForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
@@ -45,8 +45,17 @@ def mypagefunc(request):
 
 # @login_required
 def listfunc(request):
-    object_list = RiddleModel.objects.all()
+    form = FilterListForm(request.POST)
+    if form.is_valid():
+        type = form.cleaned_data['type']
+        time = form.cleaned_data['time']
+        level = form.cleaned_data['level']
+        object_list = RiddleModel.objects.filter(type=type, time=time, level=level)
+    else:
+        object_list = RiddleModel.objects.all()
     return render(request, 'list.html', {'object_list': object_list})
+    # object_list = RiddleModel.objects.all()
+    # return render(request, 'list.html', {'object_list': object_list})
 
 def detailfunc(request, pk):
     object = get_object_or_404(RiddleModel, pk=pk)
@@ -73,6 +82,13 @@ def bookmarkfunc(request, pk):
     object = RiddleModel.objects.get(pk=pk)
     # アクセスしたユーザーをbookmarksに追加する
     object.bookmarks.add(request.user)
+    object.save()
+    return redirect('detail', pk=pk)
+
+def removebookmarkfunc(request, pk):
+    object = RiddleModel.objects.get(pk=pk)
+    # アクセスしたユーザーをbookmarksに追加する
+    object.bookmarks.remove(request.user)
     object.save()
     return redirect('detail', pk=pk)
 

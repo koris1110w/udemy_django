@@ -1,0 +1,32 @@
+.rating-meter {
+  width: 140px;
+  height: 40px;
+  background-color: white;
+  border: 1px solid gray;
+  position: relative;
+}
+.rating-meter:before {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 100%;
+  background-color: red;
+  top: 0;
+  left: 0;
+}
+.rating-meter.percent-1:before {
+  width: 20%;
+}
+.rating-meter.percent-2:before {
+  width: 40%;
+}
+.rating-meter.percent-3:before {
+  width: 60%;
+}
+.rating-meter.percent-4:before {
+  width: 80%;
+}
+.rating-meter.percent-5:before {
+  width: 100%;
+}
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uL3Njc3Mvc3R5bGUuc2NzcyIsInN0eWxlLmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLFlBQUE7RUFDQSxZQUFBO0VBQ0EsdUJBQUE7RUFDQSxzQkFBQTtFQUNBLGtCQUFBO0FDQ0Y7QURDRTtFQUNFLGtCQUFBO0VBQ0EsV0FBQTtFQUNBLFFBQUE7RUFDQSxZQUFBO0VBQ0EscUJBQUE7RUFDQSxNQUFBO0VBQ0EsT0FBQTtBQ0NKO0FERUk7RUFDRSxVQUFBO0FDQU47QURJSTtFQUNFLFVBQUE7QUNGTjtBRE1JO0VBQ0UsVUFBQTtBQ0pOO0FEUUk7RUFDRSxVQUFBO0FDTk47QURVSTtFQUNFLFdBQUE7QUNSTiIsImZpbGUiOiJzdHlsZS5jc3MifQ== */

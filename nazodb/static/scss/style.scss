@@ -1,0 +1,42 @@
+.rating-meter {
+  width: 140px;
+  height: 40px;
+  background-color: white;
+  border: 1px solid gray;
+  position: relative;
+
+  &:before {
+    position: absolute;
+    content: "";
+    width: 0;
+    height: 100%;
+    background-color: red;
+    top: 0;
+    left: 0;
+  }
+  &.percent-1 {
+    &:before {
+      width: 20%;
+    }
+  }
+  &.percent-2 {
+    &:before {
+      width: 40%;
+    }
+  }
+  &.percent-3 {
+    &:before {
+      width: 60%;
+    }
+  }
+  &.percent-4 {
+    &:before {
+      width: 80%;
+    }
+  }
+  &.percent-5 {
+    &:before {
+      width: 100%;
+    }
+  }
+}

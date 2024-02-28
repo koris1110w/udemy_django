@@ -1,3 +1,9 @@
 nazodb/db.sqlite3
 todoapp/db.sqlite3
 helloworld/helloworldproject/db.sqlite3
+nazodb_negishi0221/db.sqlite3
+nazodb/static/node_modules
+nazodb/static/package-lock.json
+
+nazodb/nazoapp/__pycache__
+nazodb/nazoapp/migrations/__pycache__

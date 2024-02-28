@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
   <head>
@@ -8,6 +9,7 @@
 
     {% block customcss %}
     {% endblock customcss %}
+     <link href="{% static 'css/style.css' %}" rel="stylesheet">
     
     <title>謎解きデータベース</title>
   </head>

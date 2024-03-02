@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db import IntegrityError
 
 def signupfunc(request):
@@ -45,17 +46,29 @@ def mypagefunc(request):
 
 # @login_required
 def listfunc(request):
+    page = int(request.GET.get('page', 1)) # 表示したいページ
+    page_cnt = 2 #一画面あたり10コ表示する
+    onEachSide = 2 #選択ページの両側には3コ表示する
+    onEnds = 2 #左右両端には2コ表示する
     form = FilterListForm(request.POST)
     if form.is_valid():
         type = form.cleaned_data['type']
         time = form.cleaned_data['time']
         level = form.cleaned_data['level']
-        object_list = RiddleModel.objects.filter(type=type, time=time, level=level)
+        # object_list = RiddleModel.objects.filter(type=type, time=time, level=level)
+        data = RiddleModel.objects.order_by("id").filter(type=type, time=time, level=level)
+        data_page = Paginator(data, page_cnt)
+        object_list = data_page.get_page(page)
+        page_list = object_list.paginator.get_elided_page_range(page, on_each_side=onEachSide, on_ends=onEnds)
+        ranking_list = data.order_by('rating').reverse()[0:5]
     else:
-        object_list = RiddleModel.objects.all()
-    return render(request, 'list.html', {'object_list': object_list})
-    # object_list = RiddleModel.objects.all()
-    # return render(request, 'list.html', {'object_list': object_list})
+        # object_list = RiddleModel.objects.all()
+        data = RiddleModel.objects.order_by("id").all()
+        data_page = Paginator(data, page_cnt)
+        object_list = data_page.get_page(page)
+        page_list = object_list.paginator.get_elided_page_range(page, on_each_side=onEachSide, on_ends=onEnds)
+        ranking_list = data.order_by('rating').reverse()[0:5]
+    return render(request, 'list.html', {'object_list': object_list, 'ranking_list': ranking_list, 'page_list': page_list})
 
 def detailfunc(request, pk):
     object = get_object_or_404(RiddleModel, pk=pk)
@@ -77,6 +90,12 @@ def readfunc(request, pk):
         object.readtext = object.readtext + ' ' + username
         object.save()
         return redirect('detail', pk=pk)
+
+def playingfunc(request, pk):
+    object = RiddleModel.objects.get(pk=pk)
+    object.playings += 1
+    object.save()
+    return redirect(object.url)
 
 def bookmarkfunc(request, pk):
     object = RiddleModel.objects.get(pk=pk)

@@ -47,7 +47,7 @@ def mypagefunc(request):
 # @login_required
 def listfunc(request):
     page = int(request.GET.get('page', 1)) # 表示したいページ
-    page_cnt = 2 #一画面あたり10コ表示する
+    page_cnt = 4 #一画面あたり10コ表示する
     onEachSide = 2 #選択ページの両側には3コ表示する
     onEnds = 2 #左右両端には2コ表示する
     form = FilterListForm(request.POST)

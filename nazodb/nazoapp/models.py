@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth import get_user_model
 
@@ -45,3 +46,9 @@ class RiddleModel(models.Model):
 
     def __str__(self):
         return self.name
+    
+class EvaluationModel(models.Model):
+    user = models.ForeignKey(User, verbose_name="投稿者", on_delete=models.CASCADE)
+    riddle = models.ForeignKey(RiddleModel, verbose_name="謎", on_delete=models.CASCADE)
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    level = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])

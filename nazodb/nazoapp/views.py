@@ -50,25 +50,51 @@ def listfunc(request):
     page_cnt = 4 #一画面あたり10コ表示する
     onEachSide = 2 #選択ページの両側には3コ表示する
     onEnds = 2 #左右両端には2コ表示する
-    form = FilterListForm(request.POST)
+
+    # 検索のときはGETで取得します。
+    form = FilterListForm(request.GET or None)
+
+    # object_list = RiddleModel.objects.all()
+    data = RiddleModel.objects.order_by("id").all()
+    ranking_list = data.order_by('rating').reverse()[0:5]
+
     if form.is_valid():
+        name = form.cleaned_data['name']
         type = form.cleaned_data['type']
         time = form.cleaned_data['time']
         level = form.cleaned_data['level']
+
+        filter_kwargs = {}
+        if name:
+            filter_kwargs["name__icontains"] = name
+        if type:
+            filter_kwargs["type"] = type
+        if time:
+            filter_kwargs['time'] = time
+        if level:
+            filter_kwargs['level'] = level
+
+
+        data = data.filter(**filter_kwargs)
         # object_list = RiddleModel.objects.filter(type=type, time=time, level=level)
-        data = RiddleModel.objects.order_by("id").filter(type=type, time=time, level=level)
-        data_page = Paginator(data, page_cnt)
-        object_list = data_page.get_page(page)
-        page_list = object_list.paginator.get_elided_page_range(page, on_each_side=onEachSide, on_ends=onEnds)
-        ranking_list = data.order_by('rating').reverse()[0:5]
-    else:
-        # object_list = RiddleModel.objects.all()
-        data = RiddleModel.objects.order_by("id").all()
-        data_page = Paginator(data, page_cnt)
-        object_list = data_page.get_page(page)
-        page_list = object_list.paginator.get_elided_page_range(page, on_each_side=onEachSide, on_ends=onEnds)
-        ranking_list = data.order_by('rating').reverse()[0:5]
-    return render(request, 'list.html', {'object_list': object_list, 'ranking_list': ranking_list, 'page_list': page_list})
+        # data = RiddleModel.objects.order_by("id").filter(type=type, time=time, level=level)
+        # data_page = Paginator(data, page_cnt)
+        # object_list = data_page.get_page(page)
+        # page_list = object_list.paginator.get_elided_page_range(page, on_each_side=onEachSide, on_ends=onEnds)
+        # ranking_list = data.order_by('rating').reverse()[0:5]
+
+    data_page = Paginator(data, page_cnt)
+    object_list = data_page.get_page(page)
+    page_list = object_list.paginator.get_elided_page_range(page, on_each_side=onEachSide, on_ends=onEnds)
+
+
+    context = {
+        'object_list': object_list,
+        'ranking_list': ranking_list,
+        'page_list': page_list,
+        'form': form
+    }
+    return render(request, 'list.html', context)
 
 def detailfunc(request, pk):
     object = get_object_or_404(RiddleModel, pk=pk)

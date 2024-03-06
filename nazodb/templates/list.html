@@ -75,68 +75,72 @@
     <div class="swiper-pagination"></div>
   </div>
   <form method="GET" action="">
-{#    <div class="max-w-[85rem] px-6 mx-auto mt-5 grid grid-cols-2 lg:grid-cols-4">#}
-{#      {% csrf_token %}#}
-{#      <div class="relative cols-span-1 m-2">#}
-{#        <select class="peer p-4 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600#}
-{#    focus:pt-6#}
-{#    focus:pb-2#}
-{#    [&:not(:placeholder-shown)]:pt-6#}
-{#    [&:not(:placeholder-shown)]:pb-2#}
-{#    autofill:pt-6#}
-{#    autofill:pb-2"#}
-{#                name="type">#}
-{#          <option selected>Open this select menu</option>#}
-{#          <option value="web">WEB</option>#}
-{#          <option value="line">LINE</option>#}
-{#        </select>#}
-{#        <label class="absolute top-0 start-0 p-4 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none#}
-{#      peer-focus:text-xs#}
-{#      peer-focus:-translate-y-1.5#}
-{#      peer-focus:text-gray-500#}
-{#      peer-[:not(:placeholder-shown)]:text-xs#}
-{#      peer-[:not(:placeholder-shown)]:-translate-y-1.5#}
-{#      peer-[:not(:placeholder-shown)]:text-gray-500">タイプ</label>#}
-{#      </div>#}
-{#      <div class="relative cols-span-1 m-2">#}
-{#        <select class="peer p-4 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600#}
-{#    focus:pt-6#}
-{#    focus:pb-2#}
-{#    [&:not(:placeholder-shown)]:pt-6#}
-{#    [&:not(:placeholder-shown)]:pb-2#}
-{#    autofill:pt-6#}
-{#    autofill:pb-2"#}
-{#                name="time">#}
-{#          <option selected>Open this select menu</option>#}
-{#          <option value="10">〜15分</option>#}
-{#          <option value="30">15分〜45分</option>#}
-{#          <option value="60">45分〜90分</option>#}
-{#          <option value="120">90分〜180分</option>#}
-{#          <option value="300">180分〜</option>#}
-{#        </select>#}
-{#        <label class="absolute top-0 start-0 p-4 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none#}
-{#      peer-focus:text-xs#}
-{#      peer-focus:-translate-y-1.5#}
-{#      peer-focus:text-gray-500#}
-{#      peer-[:not(:placeholder-shown)]:text-xs#}
-{#      peer-[:not(:placeholder-shown)]:-translate-y-1.5#}
-{#      peer-[:not(:placeholder-shown)]:text-gray-500">時間</label>#}
-{#      </div>#}
+    <div class="max-w-[85rem] px-6 mx-auto mt-5 grid grid-cols-2 lg:grid-cols-6">
+      <div class="relative cols-span-1 m-2">
+        {{ form.name }}
+        <label class="absolute top-0 start-0 p-4 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+          peer-focus:text-xs
+          peer-focus:-translate-y-1.5
+          peer-focus:text-gray-500
+          peer-[:not(:placeholder-shown)]:text-xs
+          peer-[:not(:placeholder-shown)]:-translate-y-1.5
+          peer-[:not(:placeholder-shown)]:text-gray-500"
+          for="{{ form.level.id_for_label }}"
+        >{{ form.name.label }}
+        </label>
+      </div>
+      <div class="relative cols-span-1 m-2">
+        {{ form.type }}
+        <label class="absolute top-0 start-0 p-4 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+          peer-focus:text-xs
+          peer-focus:-translate-y-1.5
+          peer-focus:text-gray-500
+          peer-[:not(:placeholder-shown)]:text-xs
+          peer-[:not(:placeholder-shown)]:-translate-y-1.5
+          peer-[:not(:placeholder-shown)]:text-gray-500"
+          for="{{ form.level.id_for_label }}"
+        >{{ form.type.label }}
+        </label>
+      </div>
+      <div class="relative cols-span-1 m-2">
+        {{ form.time }}
+        <label class="absolute top-0 start-0 p-4 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+          peer-focus:text-xs
+          peer-focus:-translate-y-1.5
+          peer-focus:text-gray-500
+          peer-[:not(:placeholder-shown)]:text-xs
+          peer-[:not(:placeholder-shown)]:-translate-y-1.5
+          peer-[:not(:placeholder-shown)]:text-gray-500"
+          for="{{ form.level.id_for_label }}"
+        >{{ form.time.label }}
+        </label>
+      </div>
       <div class="relative cols-span-1 m-2">
         {{ form.level }}
         <label class="absolute top-0 start-0 p-4 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
-      peer-focus:text-xs
-      peer-focus:-translate-y-1.5
-      peer-focus:text-gray-500
-      peer-[:not(:placeholder-shown)]:text-xs
-      peer-[:not(:placeholder-shown)]:-translate-y-1.5
-      peer-[:not(:placeholder-shown)]:text-gray-500"
-               for="{{ form.level.id_for_label }}"
+          peer-focus:text-xs
+          peer-focus:-translate-y-1.5
+          peer-focus:text-gray-500
+          peer-[:not(:placeholder-shown)]:text-xs
+          peer-[:not(:placeholder-shown)]:-translate-y-1.5
+          peer-[:not(:placeholder-shown)]:text-gray-500"
+          for="{{ form.level.id_for_label }}"
         >{{ form.level.label }}
         </label>
       </div>
-
-{#      {{ form.as_p }}#}
+      <div class="relative cols-span-1 m-2">
+        {{ form.order }}
+        <label class="absolute top-0 start-0 p-4 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+          peer-focus:text-xs
+          peer-focus:-translate-y-1.5
+          peer-focus:text-gray-500
+          peer-[:not(:placeholder-shown)]:text-xs
+          peer-[:not(:placeholder-shown)]:-translate-y-1.5
+          peer-[:not(:placeholder-shown)]:text-gray-500"
+          for="{{ form.level.id_for_label }}"
+        >{{ form.order.label }}
+        </label>
+      </div>
       <div class="relative cols-span-1 m-2">
         <button type="submit"
                 class="py-2 px-3 h-full w-full inline-flex items-center justify-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">

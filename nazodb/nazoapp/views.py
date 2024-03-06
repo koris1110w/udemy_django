@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import IntegrityError
+from django.db.models import Q
 
 def signupfunc(request):
     form = UserForm(request.POST)  
@@ -63,10 +64,9 @@ def listfunc(request):
         type = form.cleaned_data['type']
         time = form.cleaned_data['time']
         level = form.cleaned_data['level']
+        order = form.cleaned_data['order']
 
         filter_kwargs = {}
-        if name:
-            filter_kwargs["name__icontains"] = name
         if type:
             filter_kwargs["type"] = type
         if time:
@@ -74,19 +74,17 @@ def listfunc(request):
         if level:
             filter_kwargs['level'] = level
 
-
         data = data.filter(**filter_kwargs)
-        # object_list = RiddleModel.objects.filter(type=type, time=time, level=level)
-        # data = RiddleModel.objects.order_by("id").filter(type=type, time=time, level=level)
-        # data_page = Paginator(data, page_cnt)
-        # object_list = data_page.get_page(page)
-        # page_list = object_list.paginator.get_elided_page_range(page, on_each_side=onEachSide, on_ends=onEnds)
-        # ranking_list = data.order_by('rating').reverse()[0:5]
+        
+        if name:
+            data = data.filter(Q(name__icontains=name)|Q(description__icontains=name))
+
+        if order:
+            data = data.order_by(order).reverse()
 
     data_page = Paginator(data, page_cnt)
     object_list = data_page.get_page(page)
     page_list = object_list.paginator.get_elided_page_range(page, on_each_side=onEachSide, on_ends=onEnds)
-
 
     context = {
         'object_list': object_list,

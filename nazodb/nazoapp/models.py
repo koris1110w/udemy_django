@@ -16,9 +16,9 @@ TIME_SET = (
     ("300", "180分〜"),
 )
 LEVEL_SET = (
-    ('easy', "初級"),
-    ('normal', "中級"),
-    ('hard', "上級"),
+    ('1', "初級"),
+    ('2', "中級"),
+    ('3', "上級"),
 )
 
 class CreatorModel(models.Model):
@@ -47,7 +47,7 @@ class RiddleModel(models.Model):
     def __str__(self):
         return self.name
     
-class EvaluationModel(models.Model):
+class ReviewModel(models.Model):
     user = models.ForeignKey(User, verbose_name="投稿者", on_delete=models.CASCADE)
     riddle = models.ForeignKey(RiddleModel, verbose_name="謎", on_delete=models.CASCADE)
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])

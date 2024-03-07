@@ -1,14 +1,39 @@
-from .models import RiddleModel, CreatorModel
-from .forms import UserForm, FilterListForm
+from .models import RiddleModel, CreatorModel, ReviewModel
+from .forms import UserForm, FilterListForm, ReviewForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
 from django.db.models import Q
+
+def paginate_queryset(request, queryset, count):
+    """Pageオブジェクトを返す。
+
+    ページングしたい場合に利用してください。
+
+    countは、1ページに表示する件数です。
+    返却するPgaeオブジェクトは、以下のような感じで使えます。
+
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}">Prev</a>
+        {% endif %}
+
+    また、page_obj.object_list で、count件数分の絞り込まれたquerysetが取得できます。
+
+    """
+    paginator = Paginator(queryset, count)
+    page = request.GET.get('page')
+    try:
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+    return page_obj
 
 def signupfunc(request):
     form = UserForm(request.POST)  
@@ -47,11 +72,6 @@ def mypagefunc(request):
 
 # @login_required
 def listfunc(request):
-    page = int(request.GET.get('page', 1)) # 表示したいページ
-    page_cnt = 4 #一画面あたり10コ表示する
-    onEachSide = 2 #選択ページの両側には3コ表示する
-    onEnds = 2 #左右両端には2コ表示する
-
     # 検索のときはGETで取得します。
     form = FilterListForm(request.GET or None)
 
@@ -82,38 +102,47 @@ def listfunc(request):
         if order:
             data = data.order_by(order).reverse()
 
-    data_page = Paginator(data, page_cnt)
-    object_list = data_page.get_page(page)
-    page_list = object_list.paginator.get_elided_page_range(page, on_each_side=onEachSide, on_ends=onEnds)
+    page_cnt = 4 #一画面あたり10コ表示する
+    onEachSide = 2 #選択ページの両側には3コ表示する
+    onEnds = 2 #左右両端には2コ表示する
+    paginater = Paginator(data, page_cnt)
+    page = int(request.GET.get('page', 1)) # 表示したいページ
+    page_obj = paginater.get_page(page)
+    page_list = page_obj.paginator.get_elided_page_range(page, on_each_side=onEachSide, on_ends=onEnds)
 
     context = {
-        'object_list': object_list,
         'ranking_list': ranking_list,
+        'page_obj': page_obj,
         'page_list': page_list,
         'form': form
     }
     return render(request, 'list.html', context)
 
 def detailfunc(request, pk):
+    form = ReviewForm(request.POST)
     object = get_object_or_404(RiddleModel, pk=pk)
-    return render(request, 'detail.html', {'object': object})
+    reviewed = ReviewModel.objects.filter(user=request.user, riddle=object)
+    context = {
+        'object': object,
+        'form': form,
+        'reviewed': reviewed,
+    }
+    if form.is_valid():
+        rating = form.cleaned_data['rating']
+        level = form.cleaned_data['level']
+        try:
+            review = ReviewModel.objects.create(user=request.user, riddle=object, rating=rating, level=level)
+            return render(request, 'detail.html', context)
+        except IntegrityError:
+            return render(request, 'detail.html', context)
+
+    return render(request, 'detail.html', context)
 
 def goodfunc(request, pk):
     object = RiddleModel.objects.get(pk=pk)
     object.good += 1
     object.save()
     return redirect('detail', pk=pk)
-
-def readfunc(request, pk):
-    object = RiddleModel.objects.get(pk=pk)
-    username = request.user.get_username()
-    if username in object.readtext:
-        return redirect('detail', pk=pk)
-    else:
-        object.read += 1
-        object.readtext = object.readtext + ' ' + username
-        object.save()
-        return redirect('detail', pk=pk)
 
 def playingfunc(request, pk):
     object = RiddleModel.objects.get(pk=pk)

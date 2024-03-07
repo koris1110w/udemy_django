@@ -99,6 +99,45 @@
     </div>
   </div>
   <!-- End Grid -->
+  {% if reviewed %}
+  <p class="mt-3 text-lg text-gray-800 dark:text-gray-400">評価済みです</p>
+  {% else %}
+  <form method="POST">{% csrf_token %}
+    <div class="max-w-[85rem] px-6 mx-auto mt-5 grid grid-cols-2 lg:grid-cols-6">
+      <div class="relative cols-span-1 m-2">
+        {{ form.rating }}
+        <label class="absolute top-0 start-0 p-4 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+          peer-focus:text-xs
+          peer-focus:-translate-y-1.5
+          peer-focus:text-gray-500
+          peer-[:not(:placeholder-shown)]:text-xs
+          peer-[:not(:placeholder-shown)]:-translate-y-1.5
+          peer-[:not(:placeholder-shown)]:text-gray-500"
+          for="{{ form.level.id_for_label }}"
+        >{{ form.rating.label }}
+        </label>
+      </div>
+      <div class="relative cols-span-1 m-2">
+        {{ form.level }}
+        <label class="absolute top-0 start-0 p-4 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+          peer-focus:text-xs
+          peer-focus:-translate-y-1.5
+          peer-focus:text-gray-500
+          peer-[:not(:placeholder-shown)]:text-xs
+          peer-[:not(:placeholder-shown)]:-translate-y-1.5
+          peer-[:not(:placeholder-shown)]:text-gray-500"
+          for="{{ form.level.id_for_label }}"
+        >{{ form.level.label }}
+        </label>
+      </div>
+      <div class="relative cols-span-1 m-2">
+        <button type="submit" class="py-2 px-3 h-full w-full inline-flex items-center justify-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+          評価
+        </button>
+      </div>
+    </div>
+  </form>
+  {% endif %}
 </div>
 <!-- End Hero -->
 {% endblock content %}

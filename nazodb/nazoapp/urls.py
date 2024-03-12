@@ -1,11 +1,12 @@
 from django.contrib import admin
 from django.urls import path
-from .views import signupfunc, loginfunc, listfunc, logoutfunc, detailfunc, goodfunc, playingfunc, creatorfunc, bookmarkfunc, removebookmarkfunc, mypagefunc, RiddleList, RiddleDetail, RiddleCreate, RiddleDelete, RiddleUpdate
+from .views import signupfunc, loginfunc, topfunc, listfunc, logoutfunc, detailfunc, goodfunc, playingfunc, creatorfunc, bookmarkfunc, removebookmarkfunc, mypagefunc, RiddleList, RiddleDetail, RiddleCreate, RiddleDelete, RiddleUpdate
 
 urlpatterns = [
     path('signup/', signupfunc, name='signup'),
     path('login/', loginfunc, name='login'),
     path('logout', logoutfunc, name='logout'),
+    path('top/', topfunc, name='top'),
     path('list/', listfunc, name='list'),
     # path('list/', RiddleList.as_view(), name='list'),
     path('detail/<int:pk>', detailfunc, name='detail'),

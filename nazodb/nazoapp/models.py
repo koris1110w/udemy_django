@@ -47,6 +47,7 @@ class RiddleModel(models.Model):
     url = models.CharField(max_length=255)
     bookmarks = models.ManyToManyField(User, verbose_name="ブックマークユーザー", blank=True)
     playings = models.IntegerField(null=True, blank=True, default=0)
+    created_at = models.DateField()
 
     def __str__(self):
         return self.name

@@ -70,6 +70,16 @@ def mypagefunc(request):
     object_list = RiddleModel.objects.filter(bookmarks=request.user.pk)
     return render(request, 'mypage.html', {'object_list': object_list})
 
+def topfunc(request):
+    data = RiddleModel.objects.order_by("created_at").all()
+    ranking_list = data.order_by('rating').reverse()[0:5]
+    page_obj = data[0:10]
+    context = {
+        'ranking_list': ranking_list,
+        'page_obj': page_obj,
+    }
+    return render(request, 'top.html', context)
+
 # @login_required
 def listfunc(request):
     # 検索のときはGETで取得します。
@@ -88,11 +98,11 @@ def listfunc(request):
 
         filter_kwargs = {}
         if type:
-            filter_kwargs["type"] = type
+            filter_kwargs["type__in"] = type
         if time:
-            filter_kwargs['time'] = time
+            filter_kwargs['time__in'] = time
         if level:
-            filter_kwargs['level'] = level
+            filter_kwargs['level__in'] = level
 
         data = data.filter(**filter_kwargs)
         
@@ -125,7 +135,6 @@ def detailfunc(request, pk):
         reviewed = ReviewModel.objects.filter(user=request.user, riddle=object)
     except:
         reviewed = None
-    print(reviewed)
     context = {
         'object': object,
         'form': form,

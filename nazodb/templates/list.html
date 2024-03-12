@@ -48,7 +48,7 @@
                   {% endwith %}
 
                   <h3 class="ml-3 text-xl font-semibold text-gray-800 dark:text-gray-300">
-                    {{ object.rating }}
+                    {{ object.rating | floatformat:2 }}
                   </h3>
 
                   <svg xmlns="http://www.w3.org/2000/svg" fill="orange" viewBox="0 0 24 24" stroke-width="1.5"
@@ -202,7 +202,7 @@
                 {% comment %} <div class="rating-meter percent-{{ object.rating }}"></div> {% endcomment %}
 
                 <h3 class="ml-3 text-xl font-semibold text-gray-800 dark:text-gray-300">
-                  {{ object.rating }}
+                  {{ object.rating | floatformat:2 }}
                 </h3>
 
                 <svg xmlns="http://www.w3.org/2000/svg" fill="orange" viewBox="0 0 24 24" stroke-width="1.5"

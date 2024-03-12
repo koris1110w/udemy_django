@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
-from django.db.models import Q
+from django.db.models import Q, Avg
 
 def paginate_queryset(request, queryset, count):
     """Pageオブジェクトを返す。
@@ -121,20 +121,35 @@ def listfunc(request):
 def detailfunc(request, pk):
     form = ReviewForm(request.POST)
     object = get_object_or_404(RiddleModel, pk=pk)
-    reviewed = ReviewModel.objects.filter(user=request.user, riddle=object)
+    try:
+        reviewed = ReviewModel.objects.filter(user=request.user, riddle=object)
+    except:
+        reviewed = None
+    print(reviewed)
     context = {
         'object': object,
         'form': form,
         'reviewed': reviewed,
     }
-    if form.is_valid():
-        rating = form.cleaned_data['rating']
-        level = form.cleaned_data['level']
-        try:
-            review = ReviewModel.objects.create(user=request.user, riddle=object, rating=rating, level=level)
-            return render(request, 'detail.html', context)
-        except IntegrityError:
-            return render(request, 'detail.html', context)
+    if reviewed != []:
+        if form.is_valid():
+            rating = form.cleaned_data['rating']
+            rating_story = form.cleaned_data['rating_story']
+            rating_gimmick = form.cleaned_data['rating_gimmick']
+            rating_sukkiri = form.cleaned_data['rating_sukkiri']
+            rating_level = form.cleaned_data['rating_level']
+            
+            try:
+                review = ReviewModel.objects.create(user=request.user, riddle=object, rating=rating, rating_story=rating_story, rating_gimmick=rating_gimmick, rating_sukkiri=rating_sukkiri, rating_level=rating_level)
+                object.rating = ReviewModel.objects.filter(riddle=object).aggregate(Avg("rating"))["rating__avg"]
+                object.rating_story = ReviewModel.objects.filter(riddle=object).aggregate(Avg("rating_story"))["rating_story__avg"]
+                object.rating_gimmick = ReviewModel.objects.filter(riddle=object).aggregate(Avg("rating_gimmick"))["rating_gimmick__avg"]
+                object.rating_sukkiri = ReviewModel.objects.filter(riddle=object).aggregate(Avg("rating_sukkiri"))["rating_sukkiri__avg"]
+                object.rating_level = ReviewModel.objects.filter(riddle=object).aggregate(Avg("rating_level"))["rating_level__avg"]
+                object.save()
+                return render(request, 'detail.html', context)
+            except IntegrityError:
+                return render(request, 'detail.html', context)
 
     return render(request, 'detail.html', context)
 

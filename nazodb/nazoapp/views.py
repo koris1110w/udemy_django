@@ -112,7 +112,7 @@ def listfunc(request):
         if order:
             data = data.order_by(order).reverse()
 
-    page_cnt = 4 #一画面あたり10コ表示する
+    page_cnt = 2 #一画面あたり10コ表示する
     onEachSide = 2 #選択ページの両側には3コ表示する
     onEnds = 2 #左右両端には2コ表示する
     paginater = Paginator(data, page_cnt)

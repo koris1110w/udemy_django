@@ -17,58 +17,53 @@
         >{{ form.name.label }}
         </label>
       </div>
-      <div class="relative cols-span-1 m-2">
-        <div id="type_div">
-          {{ form.type }}
+      <div class="relative px-2 mt-2 cols-span-1">
+        <button id="dropdownBgHoverButton" data-dropdown-toggle="dropdownType" class="w-full p-4 text-center inline-flex justify-between items-center border-gray-200 rounded-lg text-sm dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" type="button">
+          {{ form.type.label }}
+          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          </svg>
+        </button>
+        <!-- Dropdown menu -->
+        <div id="dropdownType" class="absolute hidden z-10 w-48 bg-white rounded-lg shadow dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-200">
+            {% for choice in form.type %}
+            <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+              {{ choice }}
+            </div>
+            {% endfor %}
         </div>
-        <label class="absolute top-0 start-0 p-4 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
-          peer-focus:text-xs
-          peer-focus:-translate-y-1.5
-          peer-focus:text-gray-500
-          peer-[:not(:placeholder-shown)]:text-xs
-          peer-[:not(:placeholder-shown)]:-translate-y-1.5
-          peer-[:not(:placeholder-shown)]:text-gray-500"
-               for="{{ form.level.id_for_label }}"
-        >{{ form.type.label }}
-        </label>
-        <p id="label_type" class="text-white">選択肢を表示</p>
-        <script>
-          const labelType = document.getElementById("label_type")
-          const idType = document.getElementById("type_div")
-          labelType.addEventListener("click", function () {
-            if (idType.classList.contains("hidden")) {
-              idType.classList.remove("hidden")
-            } else {
-              idType.classList.add("hidden")
-            }
-          })
-        </script>
       </div>
-      <div class="relative cols-span-1 m-2">
-        {{ form.time }}
-        <label class="absolute top-0 start-0 p-4 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
-          peer-focus:text-xs
-          peer-focus:-translate-y-1.5
-          peer-focus:text-gray-500
-          peer-[:not(:placeholder-shown)]:text-xs
-          peer-[:not(:placeholder-shown)]:-translate-y-1.5
-          peer-[:not(:placeholder-shown)]:text-gray-500"
-               for="{{ form.level.id_for_label }}"
-        >{{ form.time.label }}
-        </label>
+      <div class="relative px-2 mt-2 cols-span-1">
+        <button id="dropdownBgHoverButton" data-dropdown-toggle="dropdownTime" class="w-full p-4 text-center inline-flex justify-between items-center border-gray-200 rounded-lg text-sm dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" type="button">
+          {{ form.time.label }}
+          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          </svg>
+        </button>
+        <!-- Dropdown menu -->
+        <div id="dropdownTime" class="absolute hidden z-10 w-48 bg-white rounded-lg shadow dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-200">
+            {% for choice in form.time %}
+            <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+              {{ choice }}
+            </div>
+            {% endfor %}
+        </div>
       </div>
-      <div class="relative cols-span-1 m-2">
-        {{ form.level }}
-        <label class="absolute top-0 start-0 p-4 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
-          peer-focus:text-xs
-          peer-focus:-translate-y-1.5
-          peer-focus:text-gray-500
-          peer-[:not(:placeholder-shown)]:text-xs
-          peer-[:not(:placeholder-shown)]:-translate-y-1.5
-          peer-[:not(:placeholder-shown)]:text-gray-500"
-               for="{{ form.level.id_for_label }}"
-        >{{ form.level.label }}
-        </label>
+      <div class="relative px-2 mt-2 cols-span-1">
+        <button id="dropdownBgHoverButton" data-dropdown-toggle="dropdownLevel" class="w-full p-4 text-center inline-flex justify-between items-center border-gray-200 rounded-lg text-sm dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" type="button">
+          {{ form.level.label }}
+          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          </svg>
+        </button>
+        <!-- Dropdown menu -->
+        <div id="dropdownLevel" class="absolute hidden z-10 w-48 bg-white rounded-lg shadow dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-200">
+            {% for choice in form.level %}
+            <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+              {{ choice }}
+            </div>
+            {% endfor %}
+        </div>
       </div>
       <div class="relative cols-span-1 m-2">
         {{ form.order }}
@@ -111,7 +106,7 @@
               <div class="flex items-center justify-between">
                 <a href="{% url 'detail' object.pk %}">
                   <h3
-                    class="{{ object.name|nazo_red }} text-xl font-semibold">
+                    class="text-gray-800 group-hover:text-gray-600 dark:text-gray-300 dark:group-hover:text-white text-xl font-semibold">
                     {{ object.name }}
                   </h3>
                 </a>
@@ -143,10 +138,10 @@
                 <!-- メーター表示をしてみる -->
                 {% comment %} <div class="rating-meter percent-{{ object.rating }}"></div> {% endcomment %}
 
-                <h3 class="ml-3 text-xl font-semibold text-gray-800 dark:text-gray-300">
+                <h3 class="ml-3 text-xl font-semibold {{ object.rating | rating_color }}">
                   {{ object.rating | floatformat:2 }}
-                  {% three_judge object.rating as result %}
-                  {{ result.title }}: {{ result.description }}
+                  {% comment %} {% three_judge object.rating as result %}
+                  {{ result.title }}: {{ result.description }} {% endcomment %}
                 </h3>
 
                 <svg xmlns="http://www.w3.org/2000/svg" fill="orange" viewBox="0 0 24 24" stroke-width="1.5"
@@ -214,12 +209,12 @@
       {% if  page_obj.has_previous %}
         <li
           class="page-item min-h-[38px] min-w-[38px] inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
-          <a class="page-link py-2 px-2.5" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+          <a class="page-link py-2 px-2.5" href="?{% url_replace request 'page' page_obj.previous_page_number %}">&laquo;</a>
         </li>
       {% else %}
         <li
           class="page-item disabled min-h-[38px] min-w-[38px] inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
-          <a class="page-link py-2 px-2.5" href='#'>&laquo;</a>
+          <a class="page-link py-2 px-2.5" href=''>&laquo;</a>
         </li>
       {% endif %}
 
@@ -229,19 +224,19 @@
         {% if  page_obj.number == i %}
           <li
             class="page-item active min-h-[38px] min-w-[38px] inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
-            <a class="page-link py-2 px-2.5" href="?page={{ i }}">{{ i }}</a>
+            <a class="page-link py-2 px-2.5" href="?{% url_replace request 'page' i %}">{{ i }}</a>
           </li>
           <!-- マークがELLIPSISならば、リンクを外す 　これをやらないとリンクが生きててクリックするとエラーになりますよ-->
         {% elif i == page_obj.paginator.ELLIPSIS %}
           <li
             class="page-item disabled min-h-[38px] min-w-[38px] flex justify-center items-center bg-gray-200 text-gray-800 border border-gray-200  text-sm first:rounded-s-lg last:rounded-e-lg focus:outline-none focus:bg-gray-300 disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-600 dark:border-gray-700 dark:text-white dark:focus:bg-gray-500">
-            <a class="page-link py-2 px-3" href='#'>{{ i }}</a>
+            <a class="page-link py-2 px-3" href=''>{{ i }}</a>
           </li>
           <!--　リンクをはる -->
         {% else %}
           <li
             class="page-item min-h-[38px] min-w-[38px]  inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
-            <a class="page-link py-2 px-2.5" href="?page={{ i }}">{{ i }}</a>
+            <a class="page-link py-2 px-2.5" href="?{% url_replace request 'page' i %}">{{ i }}</a>
           </li>
         {% endif %}
       {% endfor %}
@@ -250,19 +245,27 @@
       {% if  page_obj.has_next %}
         <li
           class="page-item min-h-[38px] min-w-[38px] inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
-          <a class="page-link py-2 px-2.5" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+          <a class="page-link py-2 px-2.5" href="?{% url_replace request 'page' page_obj.next_page_number %}">&raquo;</a>
         </li>
       {% else %}
         <li
           class="page-item disabled min-h-[38px] min-w-[38px] 5 inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
-          <a class="page-link py-2 px-2." href='#'>&raquo;</a>
+          <a class="page-link py-2 px-2." href=''>&raquo;</a>
         </li>
       {% endif %}
     </ul>
   </nav>
   <!-- End Pagination -->
-  <script>
-
-  </script>
+  {% comment %} <script>
+    const labelType = document.getElementById("label_type")
+    const idType = document.getElementById("type_div")
+    labelType.addEventListener("click", function () {
+      if (idType.classList.contains("hidden")) {
+        idType.classList.remove("hidden")
+      } else {
+        idType.classList.add("hidden")
+      }
+    })
+  </script> {% endcomment %}
 {% endblock content %}
 

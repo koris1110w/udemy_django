@@ -124,7 +124,8 @@ def listfunc(request):
         'ranking_list': ranking_list,
         'page_obj': page_obj,
         'page_list': page_list,
-        'form': form
+        'form': form,
+
     }
     return render(request, 'list.html', context)
 

@@ -1,14 +1,23 @@
 from .models import RiddleModel, CreatorModel, ReviewModel
-from .forms import UserForm, FilterListForm, ReviewForm
+from .forms import LoginForm, FilterListForm, ReviewForm, UserCreateForm, MyPasswordChangeForm, MyPasswordResetForm, MySetPasswordForm, EmailChangeForm
+from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, TemplateView, FormView
 from django.urls import reverse_lazy
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
+from django.http import Http404, HttpResponseBadRequest
+from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.contrib.auth.decorators import login_required
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.signing import BadSignature, SignatureExpired, loads, dumps
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.mail import send_mail
 from django.db import IntegrityError
 from django.db.models import Q, Avg
+from django.template.loader import render_to_string
+
+User = get_user_model()
 
 def paginate_queryset(request, queryset, count):
     """Pageオブジェクトを返す。
@@ -35,32 +44,202 @@ def paginate_queryset(request, queryset, count):
         page_obj = paginator.page(paginator.num_pages)
     return page_obj
 
-def signupfunc(request):
-    form = UserForm(request.POST)  
-    if form.is_valid():  
-        username = form.cleaned_data['username']  
-        password = form.cleaned_data['password']
-        try:
-            user = User.objects.create_user(username, '', password)
-            return render(request, 'signup.html', {})
-        except IntegrityError:
-            return render(request, 'signup.html', {"error":'このユーザーはすでに登録されています'})
-    else:
-        return render(request, 'signup.html', {})
+class Login(LoginView):
+    """ログインページ"""
+    form_class = LoginForm
+    template_name = 'login.html'
 
-def loginfunc(request):
-    form = UserForm(request.POST)  
-    if form.is_valid():  
-        username = form.cleaned_data['username']  
-        password = form.cleaned_data['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('list')
+class Logout(LogoutView):
+    """ログアウトページ"""
+    template_name = 'top.html'
+
+class UserCreate(CreateView):
+    """ユーザー仮登録"""
+    template_name = 'user_create.html'
+    form_class = UserCreateForm
+
+    def form_valid(self, form):
+        """仮登録と本登録用メールの発行."""
+        # 仮登録と本登録の切り替えは、is_active属性を使うと簡単です。
+        # 退会処理も、is_activeをFalseにするだけにしておくと捗ります。
+        user = form.save(commit=False)
+        user.is_active = False
+        user.save()
+
+        # アクティベーションURLの送付
+        current_site = get_current_site(self.request)
+        domain = current_site.domain
+        context = {
+            'protocol': self.request.scheme,
+            'domain': domain,
+            'token': dumps(user.pk),
+            'user': user,
+        }
+
+        subject = render_to_string('mail_template/create/subject.txt', context)
+        message = render_to_string('mail_template/create/message.txt', context)
+
+        user.email_user(subject, message)
+        return redirect('user_create_done')
+
+
+class UserCreateDone(TemplateView):
+    """ユーザー仮登録したよ"""
+    template_name = 'user_create_done.html'
+
+
+class UserCreateComplete(TemplateView):
+    """メール内URLアクセス後のユーザー本登録"""
+    template_name = 'user_create_complete.html'
+    timeout_seconds = getattr(settings, 'ACTIVATION_TIMEOUT_SECONDS', 60*60*24)  # デフォルトでは1日以内
+
+    def get(self, request, **kwargs):
+        """tokenが正しければ本登録."""
+        token = kwargs.get('token')
+        try:
+            user_pk = loads(token, max_age=self.timeout_seconds)
+
+        # 期限切れ
+        except SignatureExpired:
+            return HttpResponseBadRequest()
+
+        # tokenが間違っている
+        except BadSignature:
+            return HttpResponseBadRequest()
+
+        # tokenは問題なし
         else:
-            return render(request, 'login.html', {})
-    else:
-        return render(request, 'login.html', {})
+            try:
+                user = User.objects.get(pk=user_pk)
+            except User.DoesNotExist:
+                return HttpResponseBadRequest()
+            else:
+                if not user.is_active:
+                    # 問題なければ本登録とする
+                    user.is_active = True
+                    user.save()
+                    return super().get(request, **kwargs)
+
+        return HttpResponseBadRequest()
+
+class PasswordChange(PasswordChangeView):
+    """パスワード変更ビュー"""
+    form_class = MyPasswordChangeForm
+    success_url = reverse_lazy('password_change_done')
+    template_name = 'password_change.html'
+
+
+class PasswordChangeDone(PasswordChangeDoneView):
+    """パスワード変更しました"""
+    template_name = 'password_change_done.html'
+
+class PasswordReset(PasswordResetView):
+    """パスワード変更用URLの送付ページ"""
+    subject_template_name = 'mail_template/password_reset/subject.txt'
+    email_template_name = 'mail_template/password_reset/message.txt'
+    template_name = 'password_reset_form.html'
+    form_class = MyPasswordResetForm
+    success_url = reverse_lazy('password_reset_done')
+
+
+class PasswordResetDone(PasswordResetDoneView):
+    """パスワード変更用URLを送りましたページ"""
+    template_name = 'password_reset_done.html'
+
+
+class PasswordResetConfirm(PasswordResetConfirmView):
+    """新パスワード入力ページ"""
+    form_class = MySetPasswordForm
+    success_url = reverse_lazy('password_reset_complete')
+    template_name = 'password_reset_confirm.html'
+
+
+class PasswordResetComplete(PasswordResetCompleteView):
+    """新パスワード設定しましたページ"""
+    template_name = 'password_reset_complete.html'
+
+class EmailChange(LoginRequiredMixin, FormView):
+    """メールアドレスの変更"""
+    template_name = 'email_change_form.html'
+    form_class = EmailChangeForm
+
+    def form_valid(self, form):
+        user = self.request.user
+        new_email = form.cleaned_data['email']
+
+        # URLの送付
+        current_site = get_current_site(self.request)
+        domain = current_site.domain
+        context = {
+            'protocol': 'https' if self.request.is_secure() else 'http',
+            'domain': domain,
+            'token': dumps(new_email),
+            'user': user,
+        }
+
+        subject = render_to_string('mail_template/email_change/subject.txt', context)
+        message = render_to_string('mail_template/email_change/message.txt', context)
+        send_mail(subject, message, None, [new_email])
+
+        return redirect('email_change_done')
+
+
+class EmailChangeDone(LoginRequiredMixin, TemplateView):
+    """メールアドレスの変更メールを送ったよ"""
+    template_name = 'email_change_done.html'
+
+
+class EmailChangeComplete(LoginRequiredMixin, TemplateView):
+    """リンクを踏んだ後に呼ばれるメアド変更ビュー"""
+    template_name = 'email_change_complete.html'
+    timeout_seconds = getattr(settings, 'ACTIVATION_TIMEOUT_SECONDS', 60*60*24)  # デフォルトでは1日以内
+
+    def get(self, request, **kwargs):
+        token = kwargs.get('token')
+        try:
+            new_email = loads(token, max_age=self.timeout_seconds)
+
+        # 期限切れ
+        except SignatureExpired:
+            return HttpResponseBadRequest()
+
+        # tokenが間違っている
+        except BadSignature:
+            return HttpResponseBadRequest()
+
+        # tokenは問題なし
+        else:
+            User.objects.filter(email=new_email, is_active=False).delete()
+            request.user.email = new_email
+            request.user.save()
+            return super().get(request, **kwargs)
+
+# def signupfunc(request):
+#     form = UserForm(request.POST)  
+#     if form.is_valid():  
+#         username = form.cleaned_data['username']  
+#         password = form.cleaned_data['password']
+#         try:
+#             user = User.objects.create_user(username, '', password)
+#             return render(request, 'signup.html', {})
+#         except IntegrityError:
+#             return render(request, 'signup.html', {"error":'このユーザーはすでに登録されています'})
+#     else:
+#         return render(request, 'signup.html', {})
+
+# def loginfunc(request):
+#     form = UserForm(request.POST)  
+#     if form.is_valid():  
+#         username = form.cleaned_data['username']  
+#         password = form.cleaned_data['password']
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             login(request, user)
+#             return redirect('list')
+#         else:
+#             return render(request, 'login.html', {})
+#     else:
+#         return render(request, 'login.html', {})
 
 def logoutfunc(request):
     logout(request)

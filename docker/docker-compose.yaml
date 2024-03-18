@@ -1,0 +1,13 @@
+version: '3'
+services:
+  mysite:
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile # Dockerfileのディレクトリを指定します
+    volumes:
+      - '../nazodb:/nazoapp'
+    ports:
+      - "8000:8000" # 左側が外部からのアクセス時のポート番号:右側がdockerコンテナからアクセスする時のポート番号。ホストの8000番からコンテナの8000番へポートフォワードしています
+    container_name: docker_nazoapp
+    tty: true # ポート待受とかしていないコンテナの場合、trueに設定しておくとコンテナが起動し続けます
+    working_dir: '/nazoapp'

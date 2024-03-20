@@ -1,10 +1,12 @@
+from django.views.decorators.csrf import csrf_exempt
+
 from .models import RiddleModel, CreatorModel, ReviewModel
 from .forms import LoginForm, FilterListForm, ListFilterForm, ReviewForm, UserCreateForm, MyPasswordChangeForm, MyPasswordResetForm, MySetPasswordForm, EmailChangeForm
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, TemplateView, FormView
 from django.urls import reverse_lazy
-from django.http import Http404, HttpResponseBadRequest
+from django.http import Http404, HttpResponseBadRequest, JsonResponse
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
@@ -422,3 +424,19 @@ class CreatorDetail(DetailView):
         context = super().get_context_data(**kwargs)
         context["object_list"] = RiddleModel.objects.filter(creator=kwargs['object'])
         return context
+
+
+
+@csrf_exempt
+def bookmark_request(request, pk):
+    object = get_object_or_404(RiddleModel, pk=pk)
+
+    if not request.user in object.bookmarks.all():
+        object.bookmarks.add(request.user)
+        object.save()
+        return JsonResponse({'status': 'success', 'is_add': True}, status=200)
+    else:
+        object.bookmarks.remove(request.user)
+        object.save()
+        return JsonResponse({'status': 'success', 'is_add': False}, status=200)
+

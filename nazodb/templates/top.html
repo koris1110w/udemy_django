@@ -110,11 +110,22 @@
                     {{ object.name }}
                   </h3>
                 </a>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray"
+                <span class="bookmark-button cursor-pointer" data-pk="{{ object.pk }}">
+                  <span class="is-add {% if user in object.bookmarks.all %}{% else %}hidden{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="yellow" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray"
                      class="mr-2 w-6 h-6">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/>
-                </svg>
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/>
+                    </svg>
+                  </span>
+                  <span class="not-add {% if not user in object.bookmarks.all %}{% else %}hidden{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="noe" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray"
+                     class="mr-2 w-6 h-6">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/>
+                    </svg>
+                  </span>
+                </span>
               </div>
               <a href="{% url 'creator' object.creator.pk %}">
                 <p class="text-gray-600 dark:text-gray-400">
@@ -200,4 +211,62 @@
     <!-- End Grid -->
   </div>
   <!-- End Card Blog -->
+  <script>
+  // 非同期通信をする
+  // ブックマークボタンを押した処理を書く
+  const bookmarkButtons = document.querySelectorAll('.bookmark-button')
+  const isAdd = document.querySelectorAll('.is-add')
+  const notAdd = document.querySelectorAll('.not-add')
+
+  bookmarkButtons.forEach((item, index) => {
+    item.addEventListener('click', () => {
+      console.log('クリックされました。')
+      console.log(item.getAttribute("data-pk"))
+      const pk = item.getAttribute("data-pk")
+
+      // ここでエンドポイントを叩く
+      // アクセストークンをサーバーに送信
+      const params = ""
+        fetch(`/api/v1/bookmark/${pk}/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: params
+        })
+          .then(response => response.json())
+          .then(data => {
+              console.log(data)
+              console.log(data.is_add)
+              const dataIsAdd = data.is_add
+              if (dataIsAdd) {
+                // 黄色の星マークは表示
+                isAdd[index].classList.remove("hidden")
+                // 背景なしのマークは非表示
+                notAdd[index].classList.add('hidden')
+              } else {
+                // 黄色を非表示
+                isAdd[index].classList.add("hidden")
+                // 背景なしのマークは表示
+                notAdd[index].classList.remove('hidden')
+              }
+            }
+          )
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+    })
+  })
+
+  // jsのややこしい
+  // for文に大きく2種類ありまして。ほかにもmap, なんか色々
+  // const bookmarkButtons = document.getElementsByClassName("bookmark-button")
+  // for (let i=0; bookmarkButtons.length > i; i++) {
+  //   bookmarkButtons[i].addEventListener('click', () => {
+  //    console.log('クリックされました。')
+  //    console.log(bookmarkButtons[i].getAttribute("data-pk"))
+  //  })
+  //}
+  </script>
 {% endblock content %}
+

@@ -1,3 +1,4 @@
+from .models import RiddleModel
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm
 from django.contrib.auth import get_user_model
@@ -97,11 +98,16 @@ class EmailChangeForm(forms.ModelForm):
         email = self.cleaned_data['email']
         User.objects.filter(email=email, is_active=False).delete()
         return email
-
-# class UserForm(forms.Form):
-#     username = forms.CharField(max_length=150, label="username", help_text="ユーザー名")
-#     password = forms.CharField(max_length=150, label="password", help_text="パスワード")
-
+    
+class ListFilterForm(forms.ModelForm):
+    class Meta:
+        model = RiddleModel
+        fields = ('name', 'type', 'time', 'level',)
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500'
 
 class FilterListForm(forms.Form):
     name = forms.CharField(label="検索", max_length=255, required=False, widget=forms.TextInput(

@@ -1,5 +1,5 @@
 from .models import RiddleModel, CreatorModel, ReviewModel
-from .forms import LoginForm, FilterListForm, ReviewForm, UserCreateForm, MyPasswordChangeForm, MyPasswordResetForm, MySetPasswordForm, EmailChangeForm
+from .forms import LoginForm, FilterListForm, ListFilterForm, ReviewForm, UserCreateForm, MyPasswordChangeForm, MyPasswordResetForm, MySetPasswordForm, EmailChangeForm
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, TemplateView, FormView
@@ -241,25 +241,24 @@ class EmailChangeComplete(LoginRequiredMixin, TemplateView):
 #     else:
 #         return render(request, 'login.html', {})
 
-def logoutfunc(request):
-    logout(request)
-    return redirect('login')
+# def logoutfunc(request):
+#     logout(request)
+#     return redirect('login')
 
-def mypagefunc(request):
-    object_list = RiddleModel.objects.filter(bookmarks=request.user.pk)
-    return render(request, 'mypage.html', {'object_list': object_list})
+# def mypagefunc(request):
+#     object_list = RiddleModel.objects.filter(bookmarks=request.user.pk)
+#     return render(request, 'mypage.html', {'object_list': object_list})
 
-def topfunc(request):
-    data = RiddleModel.objects.order_by("created_at").all()
-    ranking_list = data.order_by('rating').reverse()[0:5]
-    page_obj = data[0:10]
-    context = {
-        'ranking_list': ranking_list,
-        'page_obj': page_obj,
-    }
-    return render(request, 'top.html', context)
+# def topfunc(request):
+#     data = RiddleModel.objects.order_by("created_at").all()
+#     ranking_list = data.order_by('rating').reverse()[0:5]
+#     page_obj = data[0:10]
+#     context = {
+#         'ranking_list': ranking_list,
+#         'page_obj': page_obj,
+#     }
+#     return render(request, 'top.html', context)
 
-# @login_required
 def listfunc(request):
     # 検索のときはGETで取得します。
     form = FilterListForm(request.GET or None)
@@ -368,10 +367,26 @@ def removebookmarkfunc(request, pk):
     object.save()
     return redirect('detail', pk=pk)
 
-def creatorfunc(request, pk):
-    creator = get_object_or_404(CreatorModel, pk=pk)
-    object_list = RiddleModel.objects.filter(creator=creator)
-    return render(request, 'creator.html', {'creator': creator ,'object_list': object_list})
+# def creatorfunc(request, pk):
+#     creator = get_object_or_404(CreatorModel, pk=pk)
+#     object_list = RiddleModel.objects.filter(creator=creator)
+#     return render(request, 'creator.html', {'creator': creator ,'object_list': object_list})
+
+class TopView(ListView):
+    template_name = 'top.html'
+    queryset = RiddleModel.objects.order_by("created_at").all()[0:10]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["ranking_list"] = RiddleModel.objects.order_by("rating").reverse()[0:10]
+        return context
+
+class MyPageView(ListView):
+    template_name = 'mypage.html'
+
+    def get_queryset(self):
+        return RiddleModel.objects.filter(bookmarks=self.request.user.pk)
+    
 
 class RiddleList(ListView):
     template_name = 'list.html'
@@ -401,6 +416,9 @@ class RiddleUpdate(UpdateView):
 class CreatorDetail(DetailView):
     template_name = 'creator.html'
     model = CreatorModel
+    context_object_name = "creator"
 
-
-#根岸修正
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["object_list"] = RiddleModel.objects.filter(creator=kwargs['object'])
+        return context

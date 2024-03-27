@@ -4,6 +4,38 @@
 {% block content %}
   <form method="GET" action="">
     <div class="max-w-[85rem] px-6 mx-auto mt-5 grid grid-cols-2 lg:grid-cols-6">
+      {% comment %} <div class="relative cols-span-1 m-2"> {% endcomment %}
+        {% comment %} <select multiple="multiple">
+          {% for choice in form.type %}
+          <option class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+            {{ choice }}
+          </option>
+          {% endfor %}
+        </select>
+        <label class="absolute top-0 start-0 p-4 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+          peer-focus:text-xs
+          peer-focus:-translate-y-1.5
+          peer-focus:text-gray-500
+          peer-[:not(:placeholder-shown)]:text-xs
+          peer-[:not(:placeholder-shown)]:-translate-y-1.5
+          peer-[:not(:placeholder-shown)]:text-gray-500"
+               for="{{ form.level.id_for_label }}"
+        >{{ form.type.label }}
+        </label>
+      </div>
+      <script>
+      $(function () {
+          $('select').multipleSelect({
+              width: 200,
+              formatSelectAll: function() {
+                  return 'すべて';
+              },
+              formatAllSelected: function() {
+                  return '全て選択されています';
+              }
+          });
+      });
+      </script> {% endcomment %}
       <div class="relative cols-span-1 m-2">
         {{ form.name }}
         <label class="absolute top-0 start-0 p-4 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
@@ -18,7 +50,7 @@
         </label>
       </div>
       <div class="relative px-2 mt-2 cols-span-1">
-        <button id="dropdownBgHoverButton" data-dropdown-toggle="dropdownType" class="w-full p-4 text-center inline-flex justify-between items-center border-gray-200 rounded-lg text-sm dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" type="button">
+        <button id="dropdownBgHoverButton type" data-dropdown-toggle="dropdownType" class="w-full p-4 text-center inline-flex justify-between items-center border-gray-200 rounded-lg text-sm dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" type="button">
           {{ form.type.label }}
           <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
@@ -256,16 +288,15 @@
     </ul>
   </nav>
   <!-- End Pagination -->
-  {% comment %} <script>
-    const labelType = document.getElementById("label_type")
-    const idType = document.getElementById("type_div")
-    labelType.addEventListener("click", function () {
-      if (idType.classList.contains("hidden")) {
-        idType.classList.remove("hidden")
-      } else {
-        idType.classList.add("hidden")
-      }
+  <script>
+    const label = document.getElementById("type")
+    const dropdown = document.querySelectorAll(".type")
+    dropdown.forEach((item, index) => {
+      item.addEventListener('click', () => {
+        console.log(label)
+        label.innerText = item.innerText
+      })
     })
-  </script> {% endcomment %}
+  </script>
 {% endblock content %}
 

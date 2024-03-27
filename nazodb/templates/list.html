@@ -5,7 +5,7 @@
   <form method="GET" action="">
     <div class="max-w-[85rem] px-6 mx-auto mt-5 grid grid-cols-2 lg:grid-cols-6">
       {% comment %} <div class="relative cols-span-1 m-2"> {% endcomment %}
-        {% comment %} <select multiple="multiple">
+      {% comment %} <select multiple="multiple">
           {% for choice in form.type %}
           <option class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
             {{ choice }}
@@ -50,51 +50,72 @@
         </label>
       </div>
       <div class="relative px-2 mt-2 cols-span-1">
-        <button id="dropdownBgHoverButton type" data-dropdown-toggle="dropdownType" class="w-full p-4 text-center inline-flex justify-between items-center border-gray-200 rounded-lg text-sm dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" type="button">
+        <button id="dropdownBgHoverButton type" data-dropdown-toggle="dropdownType"
+                class="w-full p-4 text-center inline-flex justify-between items-center border-gray-200 rounded-lg text-sm dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+                type="button">
           {{ form.type.label }}
-          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+               viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m1 1 4 4 4-4"/>
           </svg>
         </button>
         <!-- Dropdown menu -->
-        <div id="dropdownType" class="absolute hidden z-10 w-48 bg-white rounded-lg shadow dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-200">
-            {% for choice in form.type %}
+        <div id="dropdownType"
+             class="absolute hidden z-10 w-48 bg-white rounded-lg shadow dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-200">
+          {% for choice in form.type %}
             <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
               {{ choice }}
             </div>
-            {% endfor %}
+          {% endfor %}
         </div>
       </div>
       <div class="relative px-2 mt-2 cols-span-1">
-        <button id="dropdownBgHoverButton" data-dropdown-toggle="dropdownTime" class="w-full p-4 text-center inline-flex justify-between items-center border-gray-200 rounded-lg text-sm dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" type="button">
+        <button id="dropdownBgHoverButton" data-dropdown-toggle="dropdownTime"
+                class="w-full p-4 text-center inline-flex justify-between items-center border-gray-200 rounded-lg text-sm dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+                type="button">
           {{ form.time.label }}
-          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+               viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m1 1 4 4 4-4"/>
           </svg>
         </button>
+
+        <div id="timeSelected" class="text-white">
+          {#          <span>~15分</span>#}
+        </div>
+
         <!-- Dropdown menu -->
-        <div id="dropdownTime" class="absolute hidden z-10 w-48 bg-white rounded-lg shadow dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-200">
-            {% for choice in form.time %}
+        <div id="dropdownTime"
+             class="absolute hidden z-10 w-48 bg-white rounded-lg shadow dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-200">
+          {% for choice in form.time %}
             <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
               {{ choice }}
             </div>
-            {% endfor %}
+          {% endfor %}
         </div>
+
       </div>
       <div class="relative px-2 mt-2 cols-span-1">
-        <button id="dropdownBgHoverButton" data-dropdown-toggle="dropdownLevel" class="w-full p-4 text-center inline-flex justify-between items-center border-gray-200 rounded-lg text-sm dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" type="button">
+        <button id="dropdownBgHoverButton" data-dropdown-toggle="dropdownLevel"
+                class="w-full p-4 text-center inline-flex justify-between items-center border-gray-200 rounded-lg text-sm dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+                type="button">
           {{ form.level.label }}
-          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+               viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m1 1 4 4 4-4"/>
           </svg>
         </button>
         <!-- Dropdown menu -->
-        <div id="dropdownLevel" class="absolute hidden z-10 w-48 bg-white rounded-lg shadow dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-200">
-            {% for choice in form.level %}
+        <div id="dropdownLevel"
+             class="absolute hidden z-10 w-48 bg-white rounded-lg shadow dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-200">
+          {% for choice in form.level %}
             <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
               {{ choice }}
             </div>
-            {% endfor %}
+          {% endfor %}
         </div>
       </div>
       <div class="relative cols-span-1 m-2">
@@ -277,7 +298,8 @@
       {% if  page_obj.has_next %}
         <li
           class="page-item min-h-[38px] min-w-[38px] inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
-          <a class="page-link py-2 px-2.5" href="?{% url_replace request 'page' page_obj.next_page_number %}">&raquo;</a>
+          <a class="page-link py-2 px-2.5"
+             href="?{% url_replace request 'page' page_obj.next_page_number %}">&raquo;</a>
         </li>
       {% else %}
         <li
@@ -297,6 +319,38 @@
         label.innerText = item.innerText
       })
     })
+  </script>
+
+  <script>
+    const timeOptions = document.getElementsByName("time")
+    const timeSelected = document.getElementById("timeSelected")
+    // 要素を追加する関数
+    const AddRemoveElm = () => {
+      for (let i = 0; timeOptions.length > i; i++) {
+        console.log(timeOptions[i].nextSibling)
+        timeOptions[i].addEventListener('change', function () {
+          // 選択して追加された要素を取得する
+          const selectedOptions = document.querySelectorAll(".selectedOption")
+          // チェックされたら要素を追加、外されたら削除
+          if (timeOptions[i].checked) {
+            const newElement = document.createElement("span")
+            newElement.setAttribute("class", "selectedOption")
+            // 任意のIDをvalueの値で入れておく
+            newElement.setAttribute("data-id", timeOptions[i].value)
+            newElement.innerHTML = timeOptions[i].nextSibling.textContent
+            timeSelected.appendChild(newElement)
+          } else {
+            selectedOptions.forEach((elm) => {
+              // valueの値とdata-idの値が一致するものを削除する
+              if (elm.getAttribute("data-id") === timeOptions[i].value) {
+                elm.remove()
+              }
+            })
+          }
+        })
+      }
+    }
+    AddRemoveElm()
   </script>
 {% endblock content %}
 

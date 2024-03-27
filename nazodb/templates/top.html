@@ -226,10 +226,19 @@
       // ここでエンドポイントを叩く
       // アクセストークンをサーバーに送信
       const params = ""
-      fetch(`/api/v1/bookmark/${pk}/`, {
+      {#fetch(`/api/v1/bookmark/${pk}/`, {#}
+      {#  method: 'POST',#}
+      {#  headers: {#}
+      {#    'Content-Type': 'application/x-www-form-urlencoded',#}
+      {#  },#}
+      {#  body: params#}
+      {#})#}
+
+      fetch(`/api/v2/bookmark/${pk}/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRFToken': "{{ csrf_token }}",
         },
         body: params
       })

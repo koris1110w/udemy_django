@@ -1,0 +1,55 @@
+{% load myatag %}
+<!-- Pagination -->
+<nav aria-label="ページ送り" class="flex justify-center items-center">
+    <ul class="pagination">
+      <!--　左端マークの処理（<<マークの設定と選択ページが左端（１）ならばリンクを外す）-->
+      {% if  page_obj.has_previous %}
+        <li
+          class="page-item min-h-[38px] min-w-[38px] inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
+          <a class="page-link py-2 px-2.5" href="?{% url_replace request 'page' page_obj.previous_page_number %}">&laquo;</a>
+        </li>
+      {% else %}
+        <li
+          class="page-item disabled min-h-[38px] min-w-[38px] inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
+          <a class="page-link py-2 px-2.5" href=''>&laquo;</a>
+        </li>
+      {% endif %}
+
+      <!-- data_listはview.pyでpaginator.get_elided_page_rangeをつかってlistを作ったやつを渡してきてる Django3.2以降で有効-->
+      {% for i in page_list %}
+        <!-- 選択ページならば、activeにする -->
+        {% if  page_obj.number == i %}
+          <li
+            class="page-item active min-h-[38px] min-w-[38px] inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
+            <a class="page-link py-2 px-2.5" href="?{% url_replace request 'page' i %}">{{ i }}</a>
+          </li>
+          <!-- マークがELLIPSISならば、リンクを外す 　これをやらないとリンクが生きててクリックするとエラーになりますよ-->
+        {% elif i == page_obj.paginator.ELLIPSIS %}
+          <li
+            class="page-item disabled min-h-[38px] min-w-[38px] flex justify-center items-center bg-gray-200 text-gray-800 border border-gray-200  text-sm first:rounded-s-lg last:rounded-e-lg focus:outline-none focus:bg-gray-300 disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-600 dark:border-gray-700 dark:text-white dark:focus:bg-gray-500">
+            <a class="page-link py-2 px-3" href=''>{{ i }}</a>
+          </li>
+          <!--　リンクをはる -->
+        {% else %}
+          <li
+            class="page-item min-h-[38px] min-w-[38px]  inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
+            <a class="page-link py-2 px-2.5" href="?{% url_replace request 'page' i %}">{{ i }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+      <!--　右端マークの処理（<<マークの設定と選択ページが右端（最終ページ数）ならばリンクを外す）-->
+      {% if  page_obj.has_next %}
+        <li
+          class="page-item min-h-[38px] min-w-[38px] inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
+          <a class="page-link py-2 px-2.5"
+             href="?{% url_replace request 'page' page_obj.next_page_number %}">&raquo;</a>
+        </li>
+      {% else %}
+        <li
+          class="page-item disabled min-h-[38px] min-w-[38px] 5 inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
+          <a class="page-link py-2 px-2." href=''>&raquo;</a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>

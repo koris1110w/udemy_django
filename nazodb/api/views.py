@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from nazoapp.models import RiddleModel
+from . import serializer
+from . import pagination
 
 
 class APIHelloView(APIView):
@@ -20,7 +22,6 @@ class APIHelloView(APIView):
         return Response(status=200, data={
             "あいさつ": "Bye"
         })
-
 
 class APIBookMarkView(APIView):
     permission_classes = [AllowAny]
@@ -42,3 +43,9 @@ class APIBookMarkView(APIView):
             object.bookmarks.remove(self.request.user)
             object.save()
             return Response({'status': 'success', 'is_add': False}, status=200)
+        
+class APIRankingView(generics.ListAPIView):
+    permission_classes = [AllowAny]
+    queryset = RiddleModel.objects.order_by('rating').reverse()[0:5]
+    serializer_class = serializer.RiddleSerializer
+    # pagination_class = pagination.StandardResultsSetPagination

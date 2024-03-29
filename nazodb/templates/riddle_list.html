@@ -1,29 +1,9 @@
-{% extends 'base.html' %}
+{% load myatag %}
 
-{% block content %}
-  <div id="app">
-    [[msg]]
-  </div>
-  <!-- スライダーのコンテナ -->
-  <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-300">
-    最新ランキング
-  </h3>
-  {% include "riddle_ranking.html" %}
-  <!-- Card Blog -->
-  <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-    <div class="flex justify-between">
-      <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-300">
-        新着一覧
-      </h3>
-      <a href="{% url 'list' %}">
-        <h3 class="text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-gray-300 dark:group-hover:text-white">
-          もっと見る
-        </h3>
-      </a>
-    </div>
+<div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto" id="app">
     <!-- Grid -->
     <div class="grid lg:grid-cols-2 lg:gap-y-16 gap-10">
-      {% for object in object_list %}
+      {% for object in page_obj %}
         <!-- Card -->
         <div class="group rounded-xl overflow-hidden dark:bg-gray-700">
           <div class="sm:flex p-2">
@@ -38,26 +18,21 @@
               <div class="flex items-center justify-between">
                 <a href="{% url 'detail' object.pk %}">
                   <h3
-                    class="text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-gray-300 dark:group-hover:text-white">
+                    class="text-gray-800 group-hover:text-gray-600 dark:text-gray-300 dark:group-hover:text-white text-xl font-semibold">
                     {{ object.name }}
                   </h3>
                 </a>
                 <span class="bookmark-button cursor-pointer" data-pk="{{ object.pk }}">
-                  <span class="is-add {% if user in object.bookmarks.all %}{% else %}hidden{% endif %}">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="orange" viewBox="0 0 24 24" stroke-width="1.5" stroke="orange"
-                     class="mr-2 w-6 h-6">
-                      <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/>
-                    </svg>
-                  </span>
-                  <span class="not-add {% if not user in object.bookmarks.all %}{% else %}hidden{% endif %}">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray"
-                     class="mr-2 w-6 h-6">
-                      <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/>
-                    </svg>
-                  </span>
-                </span>
+                    <span class="is-add {% if user in object.bookmarks.all %}{% else %}hidden{% endif %}">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="orange" viewBox="0 0 24 24" stroke-width="1.5" stroke="orange" class="mr-2 w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/>
+                        </svg>
+                    </span>
+                    <span class="not-add {% if not user in object.bookmarks.all %}{% else %}hidden{% endif %}">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" class="mr-2 w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/>
+                        </svg>
+                    </span>
               </div>
               <a href="{% url 'creator' object.creator.pk %}">
                 <p class="text-gray-600 dark:text-gray-400">
@@ -81,14 +56,14 @@
                 <!-- メーター表示をしてみる -->
                 {% comment %} <div class="rating-meter percent-{{ object.rating }}"></div> {% endcomment %}
 
-                <h3 class="ml-3 text-xl font-semibold text-gray-800 dark:text-gray-300">
+                <h3 class="ml-3 text-xl font-semibold {{ object.rating | rating_color }}">
                   {{ object.rating | floatformat:2 }}
+                  {% comment %} {% three_judge object.rating as result %}
+                  {{ result.title }}: {{ result.description }} {% endcomment %}
                 </h3>
 
-                <svg xmlns="http://www.w3.org/2000/svg" fill="orange" viewBox="0 0 24 24" stroke-width="1.5"
-                     stroke="none" class="ml-3 w-6 h-6">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="orange" viewBox="0 0 24 24" stroke-width="1.5" stroke="none" class="ml-3 w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/>
                 </svg>
                 <h3 class="ml-3 text-xl font-semibold text-gray-800 dark:text-gray-300">
                   {{ object.bookmarks.all.count }}
@@ -144,82 +119,6 @@
   </div>
   <!-- End Card Blog -->
   <script>
-  // 非同期通信をする
-  // ブックマークボタンを押した処理を書く
-  const bookmarkButtons = document.querySelectorAll('.bookmark-button')
-  const isAdd = document.querySelectorAll('.is-add')
-  const notAdd = document.querySelectorAll('.not-add')
-  bookmarkButtons.forEach((item, index) => {
-    item.addEventListener('click', () => {
-      console.log('クリックされました。')
-      console.log(item.getAttribute("data-pk"))
-      const pk = item.getAttribute("data-pk")
-
-      // ここでエンドポイントを叩く
-      // アクセストークンをサーバーに送信
-      const params = ""
-
-      fetch(`/api/v2/bookmark/${pk}/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'X-CSRFToken': "{{ csrf_token }}",
-        },
-        body: params
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data)
-        console.log(data.is_add)
-        const dataIsAdd = data.is_add
-        if (dataIsAdd) {
-          // 黄色の星マークは表示
-          isAdd[index].classList.remove("hidden")
-          // 背景なしのマークは非表示
-          notAdd[index].classList.add('hidden')
-        } else {
-          // 黄色を非表示
-          isAdd[index].classList.add("hidden")
-          // 背景なしのマークは表示
-          notAdd[index].classList.remove('hidden')
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-    })
-  })
-
-  {% comment %} const params = ""
-  document.addEventListener("DOMContentLoaded", function() {
-    fetch(`/api/v2/ranking/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-CSRFToken': "{{ csrf_token }}",
-      },
-      body: params
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-  }); {% endcomment %}
-
-  // jsのややこしい
-  // for文に大きく2種類ありまして。ほかにもmap, なんか色々
-  // const bookmarkButtons = document.getElementsByClassName("bookmark-button")
-  // for (let i=0; bookmarkButtons.length > i; i++) {
-  //   bookmarkButtons[i].addEventListener('click', () => {
-  //    console.log('クリックされました。')
-  //    console.log(bookmarkButtons[i].getAttribute("data-pk"))
-  //  })
-  //}
-  </script>
-  <script>
     const App = {
       data() {
           return {
@@ -241,5 +140,3 @@
     }
     Vue.createApp(App).mount('#app')
   </script>
-{% endblock content %}
-

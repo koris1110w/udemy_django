@@ -377,6 +377,7 @@ def removebookmarkfunc(request, pk):
 class TopView(ListView):
     template_name = 'top.html'
     queryset = RiddleModel.objects.order_by("created_at").all()[0:10]
+    context_object_name = "page_obj"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -385,6 +386,7 @@ class TopView(ListView):
 
 class MyPageView(ListView):
     template_name = 'mypage.html'
+    context_object_name = "page_obj"
 
     def get_queryset(self):
         return RiddleModel.objects.filter(bookmarks=self.request.user.pk)
@@ -422,7 +424,7 @@ class CreatorDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["object_list"] = RiddleModel.objects.filter(creator=kwargs['object'])
+        context["page_obj"] = RiddleModel.objects.filter(creator=kwargs['object'])
         return context
 
 

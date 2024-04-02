@@ -1,6 +1,6 @@
 {% load myatag %}
 
-<div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto" id="app">
+<div class="px-4 sm:px-6 lg:px-8 mx-auto" id="app">
     <!-- Grid -->
     <div class="grid lg:grid-cols-2 lg:gap-y-16 gap-10">
       {% for object in page_obj %}
@@ -8,7 +8,7 @@
         <div class="group rounded-xl overflow-hidden dark:bg-gray-700">
           <div class="sm:flex p-2">
             <a href="{% url 'detail' object.pk %}">
-              <div class="flex-shrink-0 relative rounded-xl overflow-hidden w-full sm:w-56 h-64">
+              <div class="flex-shrink-0 relative rounded-xl overflow-hidden w-full h-48 sm:w-56 sm:h-64">
                 <img
                   class="group-hover:scale-105 transition-transform duration-500 ease-in-out size-full absolute top-0 start-0 object-cover rounded-xl"
                   src="{{ object.image.url }}" alt="Image Description">
@@ -119,24 +119,49 @@
   </div>
   <!-- End Card Blog -->
   <script>
-    const App = {
-      data() {
-          return {
-            msg: "Welcome",
+    // 非同期通信をする
+    // ブックマークボタンを押した処理を書く
+    const bookmarkButtons = document.querySelectorAll('.bookmark-button')
+    const isAdd = document.querySelectorAll('.is-add')
+    const notAdd = document.querySelectorAll('.not-add')
+    bookmarkButtons.forEach((item, index) => {
+      item.addEventListener('click', () => {
+        console.log('クリックされました。')
+        console.log(item.getAttribute("data-pk"))
+        const pk = item.getAttribute("data-pk")
+  
+        // ここでエンドポイントを叩く
+        // アクセストークンをサーバーに送信
+        const params = ""
+  
+        fetch(`/api/v2/bookmark/${pk}/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': "{{ csrf_token }}",
+          },
+          body: params
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+          console.log(data.is_add)
+          const dataIsAdd = data.is_add
+          if (dataIsAdd) {
+            // 黄色の星マークは表示
+            isAdd[index].classList.remove("hidden")
+            // 背景なしのマークは非表示
+            notAdd[index].classList.add('hidden')
+          } else {
+            // 黄色を非表示
+            isAdd[index].classList.add("hidden")
+            // 背景なしのマークは表示
+            notAdd[index].classList.remove('hidden')
           }
-      },
-      //ムスタッシュ記法を変更
-      compilerOptions: {
-          delimiters: ['[[', ']]'],
-      },
-      mounted () {
-        console.log("mounted")
-      },
-      methods: {
-        sayHello(){
-          this.msg = "Hello!"
-        }
-      },
-    }
-    Vue.createApp(App).mount('#app')
-  </script>
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+      })
+    })
+    </script>

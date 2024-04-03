@@ -43,9 +43,21 @@ class APIBookMarkView(APIView):
             object.bookmarks.remove(self.request.user)
             object.save()
             return Response({'status': 'success', 'is_add': False}, status=200)
-        
+
+
 class APIRankingView(generics.ListAPIView):
     permission_classes = [AllowAny]
     queryset = RiddleModel.objects.order_by('rating').reverse()[0:5]
     serializer_class = serializer.RiddleSerializer
+
     # pagination_class = pagination.StandardResultsSetPagination
+
+    def get(self, request, *args, **kwargs):
+        # フィルター条件の取得
+        type = request.GET.get('type')
+        if type:
+            queryset = RiddleModel.objects.filter(type=type)
+        else:
+            queryset = RiddleModel.objects.all()
+
+        return Response(data=serializer.RiddleSerializer(instance=queryset, many=True).data, status=200)

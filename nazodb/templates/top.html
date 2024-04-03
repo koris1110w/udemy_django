@@ -17,6 +17,24 @@
       </h3>
     </a>
   </div>
+  <!-- Vueテスト用 -->
+  <div class="bg-white p-8 " id="app">
+    <button class="" type="button" v-on:click="getRiddleList">再取得</button>
+    <p id="title">[[ msg ]]</p>
+    <form>
+      <select id="type" v-model="selectType" v-on:change="filterRiddle">
+        <option value="web">Web</option>
+        <option value="line">LINE</option>
+      </select>
+    </form>
+    <h1>謎一覧</h1>
+    <ul class="">
+      <li class="" v-for="riddle in this.riddle_list" :key="riddle.id">
+        [[ riddle.name ]]
+      </li>
+    </ul>
+  </div>
+
   {% include "riddle_list.html" %}
   <!-- End Grid -->
   <!-- End Card Blog -->
@@ -25,18 +43,37 @@
       data() {
           return {
             msg: "Welcome",
+            riddle_list: [],
+            selectType: ""
           }
       },
       //ムスタッシュ記法を変更
       compilerOptions: {
           delimiters: ['[[', ']]'],
       },
+      // HTMLの読み込み完了時に実行される
       mounted () {
         console.log("mounted")
+        this.getRiddleList()
       },
+      // これは任意の関数
       methods: {
         sayHello(){
           this.msg = "Hello!"
+        },
+        getRiddleList(type) {
+          if (!type) {
+            type = ""
+          }
+          axios.get(`/api/v2/ranking/?type=${type}`)
+          .then((res) => {
+            console.log(res)
+            this.riddle_list = res.data
+          })
+        },
+        filterRiddle() {
+          console.log(this.selectType)
+          this.getRiddleList(this.selectType)
         }
       },
     }

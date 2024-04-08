@@ -427,7 +427,8 @@ class CreatorDetail(DetailView):
         context["page_obj"] = RiddleModel.objects.filter(creator=kwargs['object'])
         return context
 
-
+class TestView(TemplateView):
+    template_name = 'test.html'
 
 @csrf_exempt
 def bookmark_request(request, pk):

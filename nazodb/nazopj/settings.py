@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'nazoapp.apps.NazoappConfig',
-    'rest_framework'
+    'rest_framework',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

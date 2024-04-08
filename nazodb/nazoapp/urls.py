@@ -32,6 +32,8 @@ urlpatterns = [
     path('bookmark/<int:pk>', views.bookmarkfunc, name='bookmark'),
     path('removebookmark/<int:pk>', views.removebookmarkfunc, name='removebookmark'),
     path('mypage/', views.MyPageView.as_view(), name='mypage'),
+    path('test/', views.TestView.as_view(), name='test'),
+
 
     # 非同期通信
     path('api/v1/bookmark/<int:pk>/', views.bookmark_request, name="api_bookmark")

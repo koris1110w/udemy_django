@@ -7,3 +7,19 @@ nazodb/static/package-lock.json
 
 nazodb/nazoapp/__pycache__
 nazodb/nazoapp/migrations/__pycache__
+
+# Environments
+.env
+# .env.prodを.gitignoreする
+.env.prod
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ignore static files
+static/
+# ignore migration files
+migrations/

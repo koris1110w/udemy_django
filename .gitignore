@@ -18,8 +18,11 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+nazodb/django/venv
+nazodb/.idea
+nazodb/django/*/__pycache__
 
 # ignore static files
 static/
 # ignore migration files
-migrations/
+# migrations/

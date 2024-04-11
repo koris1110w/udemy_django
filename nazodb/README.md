@@ -20,3 +20,9 @@ docker-compose up
 ```
 docker-compose exec app bash
 ```
+
+
+```
+postgresのバージョンが変わったので
+docker-compose down -v #ボリューム削除で完全に削除してから立ち上げる
+```

@@ -9,3 +9,14 @@ npm install
 # 自動監視&CSSにコンパイル
 npm run watch
 ```
+
+
+```
+docker-compose build
+docker-compose up
+```
+
+### djangoのコマンドを使いたい時
+```
+docker-compose exec app bash
+```

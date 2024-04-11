@@ -10,7 +10,7 @@ services:
     build:
       # ビルドコンテキストはカレントディレクトリ
       context: .
-      dockerfile: containers/postgres/Dockerfile
+      dockerfile: ./postgres/Dockerfile
     # M1チップでも動くように
     # Intel Macの場合あってもなくても動く
     platform: linux/x86_64
@@ -30,25 +30,25 @@ services:
     # コンテナ内の環境変数を.envを使って設定
     env_file:
       - .env
+
   app:
     # コンテナ名をappに設定
     container_name: app
     # DjangoのDockerfileをビルドする
     build:
       # ビルドコンテキストはカレントディレクトリ
-      context: .
-      dockerfile: containers/django/Dockerfile
+      context: ./django
+#      dockerfile: ./django/Dockerfile
     # ボリュームを指定
     # ローカルのカレントディレクトリをコンテナの/codeにマウントする
     # ローカルの/staticをコンテナの/staticにマウントする
     volumes:
-      - .:/code
-      - ./static:/static
+      - ./django:/code
     # ローカルの8000番ポートとコンテナの8000番ポートをつなぐ
     ports:
       - "8000:8000"
     # シェルスクリプトを実行
-    command: sh -c "/usr/local/bin/entrypoint.sh"
+    command: /bin/sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     # コンテナ内の環境変数を.envを使って設定
     env_file:
       - .env
@@ -56,6 +56,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
 volumes:
   db_data:
-  static:
+

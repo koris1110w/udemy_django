@@ -67,21 +67,21 @@ class APIRiddleListView(generics.ListAPIView):
     queryset = RiddleModel.objects.all()
     serializer_class = serializer.RiddleSerializer
     pagination_class = pagination.StandardResultsSetPagination
-    # filter_backends = [DjangoFilterBackend]
-    # filterset_class = filter.RiddleFilter
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = filter.RiddleFilter
 
-    def get_queryset(self, *args, **kwargs):
-        queryset = RiddleModel.objects.all()
-        word = self.request.GET.get('word')
-        level = self.request.GET.get('level')
-        print(word)
-        print(level)
+    # def get_queryset(self, *args, **kwargs):
+    #     queryset = RiddleModel.objects.all()
+    #     word = self.request.GET.get('word')
+    #     level = self.request.GET.get('level')
+    #     print(word)
+    #     print(level)
 
-        # 絞り込みの値によってフィルターをかける
-        if word:
-            queryset = queryset.filter(name__icontains=word)
-        if level:
-            queryset = queryset.filter(level=level)
+    #     # 絞り込みの値によってフィルターをかける
+    #     if word:
+    #         queryset = queryset.filter(name__icontains=word)
+    #     if level:
+    #         queryset = queryset.filter(level=level)
 
-        return queryset
+    #     return queryset
 

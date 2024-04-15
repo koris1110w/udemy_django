@@ -193,14 +193,14 @@
               </h3>
             </a>
             <span class="bookmark-button cursor-pointer" @click="bookmarkRiddle(riddle.id)">
-                  <span v-if="riddle.bookmarks.includes(Number(userId))">
+                  <span v-show="getBookmarked(riddle)">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="orange" viewBox="0 0 24 24" stroke-width="1.5"
                            stroke="orange" class="mr-2 w-6 h-6">
                           <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/>
                       </svg>
                   </span>
-                  <span v-else>
+                  <span v-show="!getBookmarked(riddle)">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                          stroke="gray" class="mr-2 w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -247,7 +247,7 @@
               <path stroke-linecap="round" stroke-linejoin="round"
                     d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
             </svg>
-            <span class="mx-4 text-gray-700 dark:text-gray-300">[[ riddle.type ]]</span>
+            <span class="mx-4 text-gray-700 dark:text-gray-300">[[ getTypeDisplay(riddle.type) ]]</span>
           </div>
           <div class="flex items-center mt-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -255,7 +255,7 @@
               <path stroke-linecap="round" stroke-linejoin="round"
                     d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
             </svg>
-            <span class="mx-4 text-gray-700 dark:text-gray-300">[[ riddle.time ]]</span>
+            <span class="mx-4 text-gray-700 dark:text-gray-300">[[ getTimeDisplay(riddle.time) ]]</span>
           </div>
           <div class="flex items-center mt-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -263,7 +263,7 @@
               <path stroke-linecap="round" stroke-linejoin="round"
                     d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/>
             </svg>
-            <span class="mx-4 text-gray-700 dark:text-gray-300">[[ riddle.level ]]</span>
+            <span class="mx-4 text-gray-700 dark:text-gray-300">[[ getLevelDisplay(riddle.level) ]]</span>
           </div>
           <div class="flex items-center mt-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -285,21 +285,18 @@
   </div>
   <form>
     <input type="text" name="name" maxlength="255" v-model="selectWord">
-    <select id="type" v-model="selectType">
-      <option value=""></option>
+    <select multiple id="type" v-model="selectType">
       <option value="web">Web</option>
       <option value="line">LINE</option>
     </select>
-    <select id="time" v-model="selectTime">
-      <option value=""></option>
+    <select multiple id="time" v-model="selectTime">
       <option value="10">〜15分</option>
       <option value="30">15分〜45分</option>
       <option value="60">45分〜90分</option>
       <option value="120">90分〜180分</option>
       <option value="300">180分〜</option>
     </select>
-    <select id="level" v-model="selectLevel">
-      <option value=""></option>
+    <select multiple id="level" v-model="selectLevel">
       <option value="1">初級</option>
       <option value="2">中級</option>
       <option value="3">上級</option>
@@ -339,12 +336,12 @@
           page_count: 0,
           next: null,
           previous: null,
-          selectType: "",
-          selectTime: "",
-          selectLevel: "",
+          selectType: [],
+          selectTime: [],
+          selectLevel: [],
           selectWord: "",
-          filter_kwards: "",
-          userId: "{{ user.id }}",
+          filterKwargs: "",
+          userId: "{{ user.id }}"
         }
       },
       //ムスタッシュ記法を変更
@@ -357,11 +354,80 @@
       },
       // これは任意の関数
       methods: {
-        sayHello() {
-          this.msg = "Hello!"
+        getTypeDisplay(type) {
+          if(type == "web") {
+            return "WEB"
+          }else if(type == "line") {
+            return "LINE"
+          }
+        },
+        getTimeDisplay(time) {
+          if(time == "10") {
+            return "〜15分"
+          }else if(time == "30") {
+            return "15分〜45分"
+          }else if(time == "60") {
+            return "45分〜90分"
+          }else if(time == "120") {
+            return "90分〜180分"
+          }else if(time == "300") {
+            return "180分〜"
+          }
+        },
+        getLevelDisplay(level) {
+          if(level == "1") {
+            return "初級"
+          }else if(level == "2") {
+            return "中級"
+          }else if(level == "3") {
+            return "上級"
+          }
+        },
+        getFilterKwargs() {
+          this.filterKwargs = ""
+          if(this.selectType != []) {
+            for(var type of this.selectType) {
+              if(this.filterKwargs == "") {
+                this.filterKwargs += "?type="
+              }else{
+                this.filterKwargs += "&type="
+              }
+              this.filterKwargs += type
+            }
+          }
+          if(this.selectTime != []) {
+            for(var time of this.selectTime) {
+              if(this.filterKwargs == "") {
+                this.filterKwargs += "?time="
+              }else{
+                this.filterKwargs += "&time="
+              }
+              this.filterKwargs += time
+            }
+          }
+          if(this.selectLevel != []) {
+            for(var level of this.selectLevel) {
+              if(this.filterKwargs == "") {
+                this.filterKwargs += "?level="
+              }else{
+                this.filterKwargs += "&level="
+              }
+              this.filterKwargs += level
+            }
+          }
+          if(this.selectWord != "") {
+            if(this.filterKwargs == "") {
+              this.filterKwargs += "?word="
+            }else{
+              this.filterKwargs += "&word="
+            }
+            this.filterKwargs += this.selectWord
+          }
         },
         getRiddleList() {
-          axios.get(`/api/v2/riddle_list/?word=${this.selectWord}&level=${this.selectLevel}`)
+          this.getFilterKwargs();
+          console.log(this.filterKwargs)
+          axios.get(`/api/v2/riddle_list/${this.filterKwargs}`)
             .then((res) => {
               console.log(res)
               this.riddle_list = res.data.results
@@ -396,17 +462,20 @@
             },
             body: params
           })
-            .then(response => response.json())
-            .then(data => {
-              console.log(data)
-            })
-            .catch((error) => {
-              console.error('Error:', error);
-            });
+          .then(response => response.json())
+          .then(data => {
+            console.log(data)
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+          this.getRiddleList();
         },
-      },
+        getBookmarked(riddle) {
+          return riddle.bookmarks.includes(Number(this.userId));
+        }
+      }
     })
     app.component('star-rating', VueStarRating.default);
-    app.component('v-select', VueSelect.VueSelect);
     app.mount('#app');
   </script>

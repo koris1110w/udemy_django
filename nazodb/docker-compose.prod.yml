@@ -7,7 +7,7 @@ services:
     container_name: postgres
     build:
       context: .
-      dockerfile: containers/postgres/Dockerfile
+      dockerfile: ./postgres/Dockerfile
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
@@ -24,16 +24,16 @@ services:
   app:
     container_name: app
     build:
-      context: .
-      dockerfile: containers/django/Dockerfile
+      context: ./django
     volumes:
-      - .:/code
+      - ./django:/code
       - ./static:/static
+      - ./django/media:/media
     # 8000番ポートをNginx側が接続できるよう開く
     expose:
       - "8000"
     # シェルスクリプトを実行
-    command: sh -c "/usr/local/bin/entrypoint.sh"
+    command: /bin/sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     # コンテナ内の環境変数を.env.prodを使って設定
     env_file:
       - .env.prod
@@ -47,11 +47,12 @@ services:
     build:
       # ビルドコンテキストはカレントディレクトリ
       context: .
-      dockerfile: containers/nginx/Dockerfile
+      dockerfile: ./nginx/Dockerfile
     # ボリュームを指定
     # ローカルの/staticをコンテナの/staticにマウントする
     volumes:
       - ./static:/static
+      - ./django/media:/media
     # ローカルの80番ボートをコンテナの80番ポートとつなぐ
     ports:
       - "80:80"
@@ -61,3 +62,4 @@ services:
 volumes:
   db_data:
   static:
+  media:

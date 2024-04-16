@@ -14,7 +14,7 @@ class RiddleFilter(filters.FilterSet):
     time = filters.MultipleChoiceFilter(choices=models.TIME_SET)
     level = filters.MultipleChoiceFilter(choices=models.LEVEL_SET)
     word = filters.CharFilter(method='wordFilter')
-    order = filters.ChoiceFilter(choices=FILTER_SET, method='order')
+    order = filters.CharFilter(method='order')
 
     class Meta:
         model = models.RiddleModel

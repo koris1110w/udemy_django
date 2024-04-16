@@ -172,6 +172,39 @@
   })
 </script>
 <div class="px-4 sm:px-6 lg:px-8 mx-auto" id="app">
+  <div class="max-w-[85rem] px-6 mx-auto mt-5 grid grid-cols-2 lg:grid-cols-6">
+    <v-text-field
+      class="text-white relative cols-span-1 m-2"
+      label="検索"
+      v-model="selectWord"
+    ></v-text-field>
+    <v-select
+     class="text-white relative cols-span-1 m-2"
+      v-model="selectType"
+      label="タイプ"
+      :items=typeSet
+      multiple
+    ></v-select>
+    <v-select
+      class="text-white relative cols-span-1 m-2"
+      v-model="selectTime"
+      label="時間"
+      :items=timeSet
+      multiple
+    ></v-select>
+    <v-select
+      class="text-white relative cols-span-1 m-2"
+      v-model="selectLevel"
+      label="難易度"
+      :items=levelSet
+      multiple
+    ></v-select>
+    <v-btn
+      class="text-white relative cols-span-1 m-2"
+      v-on:click="getRiddleList"
+      size="x-large"
+    >絞り込み</v-btn>
+  </div>
   <!-- Grid -->
   <div class="grid lg:grid-cols-2 lg:gap-y-16 gap-10">
     <!-- Card -->
@@ -283,199 +316,172 @@
     </div>
     <!-- End Card -->
   </div>
-  <form>
-    <input type="text" name="name" maxlength="255" v-model="selectWord">
-    <select multiple id="type" v-model="selectType">
-      <option value="web">Web</option>
-      <option value="line">LINE</option>
-    </select>
-    <select multiple id="time" v-model="selectTime">
-      <option value="10">〜15分</option>
-      <option value="30">15分〜45分</option>
-      <option value="60">45分〜90分</option>
-      <option value="120">90分〜180分</option>
-      <option value="300">180分〜</option>
-    </select>
-    <select multiple id="level" v-model="selectLevel">
-      <option value="1">初級</option>
-      <option value="2">中級</option>
-      <option value="3">上級</option>
-    </select>
-    <button class="" type="button" v-on:click="filterRiddle">絞り込み</button>
-  </form>
-  <nav aria-label="ページ送り" class="flex justify-center items-center">
-    <ul class="pagination">
-      <!--　左端マークの処理（<<マークの設定と選択ページが左端（１）ならばリンクを外す）-->
-      <li v-if="previous != null"
-          class="page-item min-h-[38px] min-w-[38px] inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
-        <button class="page-link py-2 px-2.5" @click="pagination(previous)">&laquo;</button>
-      </li>
-      <li v-else
-          class="page-item disabled min-h-[38px] min-w-[38px] inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
-        <button class="page-link py-2 px-2.5">&laquo;</button>
-      </li>
-
-      <!--　右端マークの処理（<<マークの設定と選択ページが右端（最終ページ数）ならばリンクを外す）-->
-      <li v-if="next != null"
-          class="page-item min-h-[38px] min-w-[38px] inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
-        <button class="page-link py-2 px-2.5" @click="pagination(next)">&raquo;</button>
-      </li>
-      <li v-else
-          class="page-item disabled min-h-[38px] min-w-[38px] 5 inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
-        <button class="page-link py-2 px-2.5">&raquo;</button>
-      </li>
-    </ul>
-  </nav>
-  <script>
-    const app = Vue.createApp({
-      data() {
-        return {
-          msg: "Welcome",
-          riddle_list: [],
-          count: 0,
-          page_count: 0,
-          next: null,
-          previous: null,
-          selectType: [],
-          selectTime: [],
-          selectLevel: [],
-          selectWord: "",
-          filterKwargs: "",
-          userId: "{{ user.id }}"
-        }
-      },
-      //ムスタッシュ記法を変更
-      compilerOptions: {
-        delimiters: ['[[', ']]'],
-      },
-      // HTMLの読み込み完了時に実行される
-      mounted() {
-        this.getRiddleList()
-      },
-      // これは任意の関数
-      methods: {
-        getTypeDisplay(type) {
-          if(type == "web") {
-            return "WEB"
-          }else if(type == "line") {
-            return "LINE"
+  <v-pagination
+    class="text-white"
+    v-model="page"
+    :length="page_count"
+    rounded="0"
+    @click="getRiddleList"
+  ></v-pagination>
+<script>
+  const vuetify = Vuetify.createVuetify();
+  const app = Vue.createApp({
+    data() {
+      return {
+        msg: "Welcome",
+        riddle_list: [],
+        page: 1,
+        count: 0,
+        page_count: 0,
+        selectType: [],
+        selectTime: [],
+        selectLevel: [],
+        selectWord: "",
+        filterKwargs: "",
+        userId: "{{ user.id }}",
+        typeSet: [
+          {
+            title: "WEB",
+            value: "web"
+          },
+          {
+            title: "LINE",
+            value: "line"
           }
-        },
-        getTimeDisplay(time) {
-          if(time == "10") {
-            return "〜15分"
-          }else if(time == "30") {
-            return "15分〜45分"
-          }else if(time == "60") {
-            return "45分〜90分"
-          }else if(time == "120") {
-            return "90分〜180分"
-          }else if(time == "300") {
-            return "180分〜"
-          }
-        },
-        getLevelDisplay(level) {
-          if(level == "1") {
-            return "初級"
-          }else if(level == "2") {
-            return "中級"
-          }else if(level == "3") {
-            return "上級"
-          }
-        },
-        getFilterKwargs() {
-          this.filterKwargs = ""
-          if(this.selectType != []) {
-            for(var type of this.selectType) {
-              if(this.filterKwargs == "") {
-                this.filterKwargs += "?type="
-              }else{
-                this.filterKwargs += "&type="
-              }
-              this.filterKwargs += type
-            }
-          }
-          if(this.selectTime != []) {
-            for(var time of this.selectTime) {
-              if(this.filterKwargs == "") {
-                this.filterKwargs += "?time="
-              }else{
-                this.filterKwargs += "&time="
-              }
-              this.filterKwargs += time
-            }
-          }
-          if(this.selectLevel != []) {
-            for(var level of this.selectLevel) {
-              if(this.filterKwargs == "") {
-                this.filterKwargs += "?level="
-              }else{
-                this.filterKwargs += "&level="
-              }
-              this.filterKwargs += level
-            }
-          }
-          if(this.selectWord != "") {
-            if(this.filterKwargs == "") {
-              this.filterKwargs += "?word="
-            }else{
-              this.filterKwargs += "&word="
-            }
-            this.filterKwargs += this.selectWord
-          }
-        },
-        getRiddleList() {
-          this.getFilterKwargs();
-          console.log(this.filterKwargs)
-          axios.get(`/api/v2/riddle_list/${this.filterKwargs}`)
-            .then((res) => {
-              console.log(res)
-              this.riddle_list = res.data.results
-              this.count = res.data.count
-              this.next = res.data.next
-              this.previous = res.data.previous
-              this.page_count = Math.ceil(this.count / 2)
-            })
-        },
-        filterRiddle() {
-          console.log(`セレクトワード - ${this.selectWord}`)
-          console.log(this.selectType)
-          this.getRiddleList()
-        },
-        pagination(url) {
-          axios.get(url)
-            .then((res) => {
-              this.riddle_list = res.data.results
-              this.count = res.data.count
-              this.next = res.data.next
-              this.previous = res.data.previous
-              this.page_count = Math.ceil(this.count / 2)
-            })
-        },
-        bookmarkRiddle(pk) {
-          const params = ""
-          fetch(`/api/v2/bookmark/${pk}/`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'X-CSRFToken': "{{ csrf_token }}",
-            },
-            body: params
-          })
-          .then(response => response.json())
-          .then(data => {
-            console.log(data)
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
-          this.getRiddleList();
-        },
-        getBookmarked(riddle) {
-          return riddle.bookmarks.includes(Number(this.userId));
-        }
+        ],
+        timeSet: [
+          {
+            title: "〜15分",
+            value: "10"
+          },
+          {
+            title: "15分〜45分",
+            value: "30"
+          },
+          {
+            title: "45分〜90分",
+            value: "60"
+          },
+          {
+            title: "90分〜180分",
+            value: "120"
+          },
+          {
+            title: "180分〜",
+            value: "300"
+          },
+        ],
+        levelSet: [
+          {
+            title: "初級",
+            value: "1"
+          },
+          {
+            title: "中級",
+            value: "2"
+          },
+          {
+            title: "上級",
+            value: "3"
+          },
+        ]
       }
-    })
-    app.component('star-rating', VueStarRating.default);
-    app.mount('#app');
-  </script>
+    },
+    //ムスタッシュ記法を変更
+    compilerOptions: {
+      delimiters: ['[[', ']]'],
+    },
+    // HTMLの読み込み完了時に実行される
+    mounted() {
+      this.getRiddleList()
+    },
+    // これは任意の関数
+    methods: {
+      getTypeDisplay(type) {
+        return this.typeSet.find(el => el.value == type).title;
+      },
+      getTimeDisplay(time) {
+        return this.timeSet.find(el => el.value == time).title;
+      },
+      getLevelDisplay(level) {
+        return this.levelSet.find(el => el.value == level).title;
+      },
+      getFilterKwargs() {
+        this.filterKwargs = "?page=" + String(this.page);
+        if(this.selectType != []) {
+          for(var type of this.selectType) {
+            if(this.filterKwargs == "") {
+              this.filterKwargs += "?type="
+            }else{
+              this.filterKwargs += "&type="
+            }
+            this.filterKwargs += type
+          }
+        }
+        if(this.selectTime != []) {
+          for(var time of this.selectTime) {
+            if(this.filterKwargs == "") {
+              this.filterKwargs += "?time="
+            }else{
+              this.filterKwargs += "&time="
+            }
+            this.filterKwargs += time
+          }
+        }
+        if(this.selectLevel != []) {
+          for(var level of this.selectLevel) {
+            if(this.filterKwargs == "") {
+              this.filterKwargs += "?level="
+            }else{
+              this.filterKwargs += "&level="
+            }
+            this.filterKwargs += level
+          }
+        }
+        if(this.selectWord != "") {
+          if(this.filterKwargs == "") {
+            this.filterKwargs += "?word="
+          }else{
+            this.filterKwargs += "&word="
+          }
+          this.filterKwargs += this.selectWord
+        }
+      },
+      getRiddleList() {
+        this.getFilterKwargs();
+        console.log(this.filterKwargs)
+        axios.get(`/api/v2/riddle_list/${this.filterKwargs}`)
+          .then((res) => {
+            console.log(res)
+            this.riddle_list = res.data.results
+            this.count = res.data.count
+            this.page_count = Math.ceil(this.count / 2)
+          })
+      },
+      async bookmarkRiddle(pk) {
+        const params = ""
+        await fetch(`/api/v2/bookmark/${pk}/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': "{{ csrf_token }}",
+          },
+          body: params
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+        this.getRiddleList();
+      },
+      getBookmarked(riddle) {
+        return riddle.bookmarks.includes(Number(this.userId));
+      }
+    }
+  })
+  app.component('star-rating', VueStarRating.default);
+  app.use(vuetify).mount('#app');
+</script>

@@ -64,7 +64,7 @@ class APIRankingView(generics.ListAPIView):
     
 class APIRiddleListView(generics.ListAPIView):
     permission_classes = [AllowAny]
-    queryset = RiddleModel.objects.all()
+    queryset = RiddleModel.objects.all().order_by("created_at")
     serializer_class = serializer.RiddleSerializer
     pagination_class = pagination.StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend]

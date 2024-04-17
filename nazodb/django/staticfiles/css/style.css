@@ -1,0 +1,63 @@
+@charset "UTF-8";
+.rating-meter {
+  width: 140px;
+  height: 40px;
+  background-color: white;
+  border: 1px solid gray;
+  position: relative;
+}
+.rating-meter:before {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 100%;
+  background-color: red;
+  top: 0;
+  left: 0;
+}
+.rating-meter.percent-1:before {
+  width: 20%;
+}
+.rating-meter.percent-2:before {
+  width: 40%;
+}
+.rating-meter.percent-3:before {
+  width: 60%;
+}
+.rating-meter.percent-4:before {
+  width: 80%;
+}
+.rating-meter.percent-5:before {
+  width: 100%;
+}
+
+.swiper-wrapper {
+  /* wrapperのサイズを調整 */
+  width: 100%;
+  height: 300px !important;
+}
+
+.swiper-slide {
+  /* スライドのサイズを調整、中身のテキスト配置調整、背景色 */
+  color: #ffffff;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  text-align: center;
+}
+
+.swiper-pagination-bullets {
+  width: 100px;
+}
+
+.swiper-pagination-bullet {
+  width: 12px !important;
+  height: 12px !important;
+  margin: 0 0 0 10px !important;
+  background: #fff;
+}
+
+.swiper-pagination-bullet:first-child {
+  margin: 0 !important;
+}
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInN0eWxlLmNzcyIsIi4uL3Njc3Mvc3R5bGUuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxnQkFBZ0I7QUNBaEI7RUFDRSxZQUFBO0VBQ0EsWUFBQTtFQUNBLHVCQUFBO0VBQ0Esc0JBQUE7RUFDQSxrQkFBQTtBREVGO0FDQUU7RUFDRSxrQkFBQTtFQUNBLFdBQUE7RUFDQSxRQUFBO0VBQ0EsWUFBQTtFQUNBLHFCQUFBO0VBQ0EsTUFBQTtFQUNBLE9BQUE7QURFSjtBQ0NJO0VBQ0UsVUFBQTtBRENOO0FDR0k7RUFDRSxVQUFBO0FERE47QUNLSTtFQUNFLFVBQUE7QURITjtBQ09JO0VBQ0UsVUFBQTtBRExOO0FDU0k7RUFDRSxXQUFBO0FEUE47O0FDWUE7RUFDRSxtQkFBQTtFQUNBLFdBQUE7RUFDQSx3QkFBQTtBRFRGOztBQ1lBO0VBQ0UsZ0NBQUE7RUFDQSxjQUFBO0VBQ0EsV0FBQTtFQUNBLFlBQUE7RUFDQSxrQkFBQTtFQUNBLGtCQUFBO0FEVEY7O0FDWUE7RUFDRSxZQUFBO0FEVEY7O0FDWUE7RUFDRSxzQkFBQTtFQUNBLHVCQUFBO0VBQ0EsNkJBQUE7RUFDQSxnQkFBQTtBRFRGOztBQ1lBO0VBQ0Usb0JBQUE7QURURiIsImZpbGUiOiJzdHlsZS5jc3MifQ== */

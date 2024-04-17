@@ -18,13 +18,14 @@ services:
     build:
       context: ./django
     volumes:
+      - ./django:/code
       - ./static:/code/staticfiles
-      - ./django/media:/code/media
+      - ./media:/code/media
     # 8000番ポートをNginx側が接続できるよう開く
     expose:
       - "8000"
     # シェルスクリプトを実行
-    command: bash -c "python manage.py collectstatic && python manage.py migrate && gunicorn --workers 4  --bind  0.0.0.0:8000 nazopj.wsgi:application"
+    command: bash -c "python manage.py collectstatic --no-input --clear && python manage.py migrate && gunicorn --workers 4  --bind  0.0.0.0:8000 nazopj.wsgi:application"
 
     # コンテナ内の環境変数を.env.prodを使って設定
     env_file:

@@ -18,7 +18,6 @@ services:
     build:
       context: ./django
     volumes:
-      - ./django:/code
       - ./static:/code/staticfiles
       - ./django/media:/code/media
     # 8000番ポートをNginx側が接続できるよう開く

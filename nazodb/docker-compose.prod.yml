@@ -31,8 +31,8 @@ services:
     env_file:
       - .env.prod
     depends_on:
-      db:
-        condition: service_healthy
+      - db
+
   web:
     # コンテナ名をwebに指定
     container_name: web

@@ -19,8 +19,8 @@ services:
       context: ./django
     volumes:
       - ./django:/code
-      - ./static:/static
-      - ./django/media:/media
+      - ./static:/code/staticfiles
+      - ./django/media:/code/media
     # 8000番ポートをNginx側が接続できるよう開く
     expose:
       - "8000"
@@ -44,7 +44,7 @@ services:
     # ボリュームを指定
     # ローカルの/staticをコンテナの/staticにマウントする
     volumes:
-      - ./static:/static
+      - ./static:/staticfiles
       - ./django/media:/media
     # ローカルの80番ボートをコンテナの80番ポートとつなぐ
     ports:

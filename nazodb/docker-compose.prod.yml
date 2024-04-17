@@ -6,7 +6,7 @@ services:
   db:
     image: postgres:15
     environment:
-      - POSTGRES_DB=postgres
+      - POSTGRES_DB=posudostgres
       - POSTGRES_USER=postgres-prod
       - POSTGRES_PASSWORD=postgres-prod
     volumes:
@@ -25,7 +25,7 @@ services:
     expose:
       - "8000"
     # シェルスクリプトを実行
-    command: bash -c "python manage.py migrate && gunicorn --workers 4  --bind  0.0.0.0:8000 project.wsgi:application"
+    command: bash -c "python manage.py migrate && gunicorn --workers 4  --bind  0.0.0.0:8000 nozopj.wsgi:application"
 
     # コンテナ内の環境変数を.env.prodを使って設定
     env_file:

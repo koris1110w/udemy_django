@@ -17,7 +17,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s
+#      start_period: 30s
     # コンテナ内の環境変数を.env.prodを使って設定
     env_file:
       - .env.prod

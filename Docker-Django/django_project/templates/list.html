@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% load myatag %}
+
+{% block content %}
+  <form method="GET" action="">
+    <div class="max-w-[85rem] px-6 mx-auto mt-5 grid grid-cols-2 lg:grid-cols-6">
+      <div class="relative cols-span-1 m-2">
+        {{ form.name }}
+        <label class="absolute top-0 start-0 p-4 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+          peer-focus:text-xs
+          peer-focus:-translate-y-1.5
+          peer-focus:text-gray-500
+          peer-[:not(:placeholder-shown)]:text-xs
+          peer-[:not(:placeholder-shown)]:-translate-y-1.5
+          peer-[:not(:placeholder-shown)]:text-gray-500"
+               for="{{ form.level.id_for_label }}"
+        >{{ form.name.label }}
+        </label>
+      </div>
+      <div class="relative px-2 mt-2 cols-span-1">
+        <button id="dropdownBgHoverButton type" data-dropdown-toggle="dropdownType"
+          class="w-full p-4 text-center inline-flex justify-between items-center border-gray-200 rounded-lg text-sm dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+          type="button">
+          {{ form.type.label }}
+          <span id="typeSelected"></span>
+          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          </svg>
+        </button>
+        <!-- Dropdown menu -->
+        <div id="dropdownType"
+             class="absolute hidden z-10 w-48 bg-white rounded-lg shadow dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-200">
+          {% for choice in form.type %}
+            <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+              {{ choice }}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="relative px-2 mt-2 cols-span-1">
+        <button id="dropdownBgHoverButton" data-dropdown-toggle="dropdownTime"
+          class="w-full p-4 text-center inline-flex justify-between items-center border-gray-200 rounded-lg text-sm dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+          type="button">
+          {{ form.time.label }}
+          <span id="timeSelected"></span>
+          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          </svg>
+        </button>
+        <!-- Dropdown menu -->
+        <div id="dropdownTime"
+             class="absolute hidden z-10 w-48 bg-white rounded-lg shadow dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-200">
+          {% for choice in form.time %}
+            <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+              {{ choice }}
+            </div>
+          {% endfor %}
+        </div>
+
+      </div>
+      <div class="relative px-2 mt-2 cols-span-1">
+        <button id="dropdownBgHoverButton" data-dropdown-toggle="dropdownLevel"
+          class="w-full p-4 text-center inline-flex justify-between items-center border-gray-200 rounded-lg text-sm dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+          type="button">
+          {{ form.level.label }}
+          <span id="levelSelected"></span>
+          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+          </svg>
+        </button>
+        <!-- Dropdown menu -->
+        <div id="dropdownLevel"
+             class="absolute hidden z-10 w-48 bg-white rounded-lg shadow dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-200">
+          {% for choice in form.level %}
+            <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+              {{ choice }}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="relative cols-span-1 m-2">
+        {{ form.order }}
+        <label class="absolute top-0 start-0 p-4 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+          peer-focus:text-xs
+          peer-focus:-translate-y-1.5
+          peer-focus:text-gray-500
+          peer-[:not(:placeholder-shown)]:text-xs
+          peer-[:not(:placeholder-shown)]:-translate-y-1.5
+          peer-[:not(:placeholder-shown)]:text-gray-500"
+               for="{{ form.level.id_for_label }}"
+        >{{ form.order.label }}
+        </label>
+      </div>
+      <div class="relative cols-span-1 m-2">
+        <button type="submit"
+                class="py-2 px-3 h-full w-full inline-flex items-center justify-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+          絞り込み
+        </button>
+      </div>
+    </div>
+  </form>
+  <!-- End Floating Select -->
+  <!-- Card Blog -->
+  {% include "riddle_list.html" %}
+  {% include "pagination.html" %}
+  <!-- End Pagination -->
+  <script>
+    const typeOptions = document.getElementsByName("type")
+    const typeSelected = document.getElementById("typeSelected")
+    const timeOptions = document.getElementsByName("time")
+    const timeSelected = document.getElementById("timeSelected")
+    const levelOptions = document.getElementsByName("level")
+    const levelSelected = document.getElementById("levelSelected")
+    // 要素を追加する関数
+    const AddRemoveElm = () => {
+      for (let i = 0; timeOptions.length > i; i++) {
+        console.log(timeOptions[i].nextSibling)
+        timeOptions[i].addEventListener('change', function () {
+          // 選択して追加された要素を取得する
+          const selectedOptions = document.querySelectorAll(".selectedOption")
+          // チェックされたら要素を追加、外されたら削除
+          if (timeOptions[i].checked) {
+            const newElement = document.createElement("span")
+            newElement.setAttribute("class", "selectedOption")
+            // 任意のIDをvalueの値で入れておく
+            newElement.setAttribute("data-id", timeOptions[i].value)
+            newElement.innerHTML = timeOptions[i].nextSibling.textContent
+            timeSelected.appendChild(newElement)
+          } else {
+            selectedOptions.forEach((elm) => {
+              // valueの値とdata-idの値が一致するものを削除する
+              if (elm.getAttribute("data-id") === timeOptions[i].value) {
+                elm.remove()
+              }
+            })
+          }
+        })
+      }
+    }
+    AddRemoveElm()
+    // 要素を追加する関数
+    for (let i = 0; typeOptions.length > i; i++) {
+      console.log(typeOptions[i].nextSibling)
+      typeOptions[i].addEventListener('change', function () {
+        // 選択して追加された要素を取得する
+        const selectedOptions = document.querySelectorAll(".selectedOption")
+        // チェックされたら要素を追加、外されたら削除
+        if (typeOptions[i].checked) {
+          const newElement = document.createElement("span")
+          newElement.setAttribute("class", "selectedOption")
+          // 任意のIDをvalueの値で入れておく
+          newElement.setAttribute("data-id", typeOptions[i].value)
+          newElement.innerHTML = typeOptions[i].nextSibling.textContent
+          typeSelected.appendChild(newElement)
+        } else {
+          selectedOptions.forEach((elm) => {
+            // valueの値とdata-idの値が一致するものを削除する
+            if (elm.getAttribute("data-id") === typeOptions[i].value) {
+              elm.remove()
+            }
+          })
+        }
+      })
+    }
+    for (let i = 0; levelOptions.length > i; i++) {
+      console.log(levelOptions[i].nextSibling)
+      levelOptions[i].addEventListener('change', function () {
+        // 選択して追加された要素を取得する
+        const selectedOptions = document.querySelectorAll(".selectedOption")
+        // チェックされたら要素を追加、外されたら削除
+        if (levelOptions[i].checked) {
+          const newElement = document.createElement("span")
+          newElement.setAttribute("class", "selectedOption")
+          // 任意のIDをvalueの値で入れておく
+          newElement.setAttribute("data-id", levelOptions[i].value)
+          newElement.innerHTML = levelOptions[i].nextSibling.textContent
+          levelSelected.appendChild(newElement)
+        } else {
+          selectedOptions.forEach((elm) => {
+            // valueの値とdata-idの値が一致するものを削除する
+            if (elm.getAttribute("data-id") === levelOptions[i].value) {
+              elm.remove()
+            }
+          })
+        }
+      })
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+      for (let i = 0; typeOptions.length > i; i++) {
+        if (typeOptions[i].checked) {
+          const newElement = document.createElement("span")
+          newElement.setAttribute("class", "selectedOption")
+          // 任意のIDをvalueの値で入れておく
+          newElement.setAttribute("data-id", typeOptions[i].value)
+          newElement.innerHTML = typeOptions[i].nextSibling.textContent
+          typeSelected.appendChild(newElement)
+        } 
+      }
+      for (let i = 0; timeOptions.length > i; i++) {
+        if (timeOptions[i].checked) {
+          const newElement = document.createElement("span")
+          newElement.setAttribute("class", "selectedOption")
+          // 任意のIDをvalueの値で入れておく
+          newElement.setAttribute("data-id", timeOptions[i].value)
+          newElement.innerHTML = timeOptions[i].nextSibling.textContent
+          timeSelected.appendChild(newElement)
+        } 
+      }
+      for (let i = 0; levelOptions.length > i; i++) {
+        if (levelOptions[i].checked) {
+          const newElement = document.createElement("span")
+          newElement.setAttribute("class", "selectedOption")
+          // 任意のIDをvalueの値で入れておく
+          newElement.setAttribute("data-id", levelOptions[i].value)
+          newElement.innerHTML = levelOptions[i].nextSibling.textContent
+          levelSelected.appendChild(newElement)
+        } 
+      }
+    });
+  </script>
+{% endblock content %}
+

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<div class="mt-10 container flex justify-center items-center grid-cols-3">
+  <div class="ml-10">
+    <h3 class="text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-gray-300 dark:group-hover:text-white">
+      {{ user.username }}
+    </h3>
+    <a href="{% url 'password_change' %}">
+      <h3 class="text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-gray-300 dark:group-hover:text-white">
+        パスワード変更
+      </h3>
+    </a>
+    <a href="{% url 'email_change' %}">
+      <h3 class="text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-gray-300 dark:group-hover:text-white">
+        メールアドレス変更
+      </h3>
+    </a>
+  </div>
+</div>
+<!-- Card Blog -->
+<h3 class="text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-gray-300 dark:group-hover:text-white">
+  ブックマークした謎解き一覧
+</h3>
+{% include "riddle_list.html" %}
+{% else %}
+<p>please login</p>
+{% endif %}
+{% endblock content %}

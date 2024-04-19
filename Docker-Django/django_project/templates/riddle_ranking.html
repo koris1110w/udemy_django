@@ -1,0 +1,78 @@
+<ul class="slider mx-8">
+  {% for object in ranking_list %}
+  <li class="swiper-slide p-2">
+    <!-- Card -->
+    <div class="group rounded-xl overflow-hidden bg-gray-700">
+      <div class="flex p-2 flex-col relative">
+        <a href="{% url 'detail' object.pk %}">
+          <div class="flex-shrink-0 relative rounded-xl overflow-hidden w-full h-40">
+            <img
+              class="group-hover:scale-105 transition-transform duration-500 ease-in-out size-full absolute top-0 start-0 object-cover rounded-xl"
+              src="{{ object.image.url }}" alt="Image Description">
+          </div>
+        </a>
+        <div class="absolute top-0 left-0 text-red-600 bg-white w-8 h-8">{{ forloop.counter }}</div>
+        <div class="flex flex-col items-start mt-2 ml-2">
+          <a href="{% url 'detail' object.pk %}">
+            <h3 class="text-left text-xl font-semibold text-gray-300 group-hover:text-white overflow-ellipsis whitespace-nowrap overflow-hidden w-48">
+              {{ object.name }}
+            </h3>
+          </a>
+          <a href="{% url 'creator' object.creator.pk %}">
+            <p class="text-gray-400 hover:text-white overflow-ellipsis whitespace-nowrap overflow-hidden">
+              {{ object.creator }}
+            </p>
+          </a>
+          <!-- Rating -->
+          <div class="flex items-center mt-1">
+            {#星の数をレーティングの分表示する#}
+            <!-- 1個ずつ判定をかける -->
+            {% with ''|center:5 as range %}
+              {% for _ in range %}
+                <svg
+                  class="flex-shrink-0 size-5 text-yellow-400 {% if forloop.counter <= object.rating %}dark:text-yellow-600{% else %}dark:text-gray-600{% endif %}"
+                  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  viewBox="0 0 16 16">
+                  <path
+                    d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                </svg>
+              {% endfor %}
+            {% endwith %}
+
+            <h3 class="ml-3 text-xl font-semibold text-gray-800 dark:text-gray-300">
+              {{ object.rating | floatformat:2 }}
+            </h3>
+
+            <svg xmlns="http://www.w3.org/2000/svg" fill="orange" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="none" class="ml-3 w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/>
+            </svg>
+            <h3 class="ml-3 text-xl font-semibold text-gray-800 dark:text-gray-300">
+              {{ object.bookmarks.all.count }}
+            </h3>
+          </div>
+          <!-- End Rating -->
+        </div>
+      </div>
+    </div>
+    <!-- End Card -->
+  </li>
+{% endfor %}
+</ul>
+<script>
+  var slides;
+  if (window.matchMedia('(max-width: 640px)').matches) {
+    slides = 2;
+  } else if (window.matchMedia('(max-width:1024px)').matches) {
+    slides = 4;
+  } else {
+    slides = 5;
+  }
+  $('.slider').slick({
+    infinite: true,
+    slidesToShow: slides,
+    autoplay: true,
+    dots: true,
+  });
+</script>

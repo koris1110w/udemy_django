@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <!-- スライダーのコンテナ -->
+  <h3 class="my-4 text-xl font-semibold text-gray-300">
+    最新ランキング
+  </h3>
+  {% include "riddle_ranking.html" %}
+  <!-- Card Blog -->
+  <div class="my-4 flex justify-between">
+    <h3 class="text-xl font-semibold text-gray-300">
+      新着一覧
+    </h3>
+    <a href="{% url 'list' %}">
+      <h3 class="text-xl font-semibold text-gray-300 hover:text-white">
+        もっと見る
+      </h3>
+    </a>
+  </div>
+
+  {% include "riddle_list.html" %}
+{% endblock content %}
+

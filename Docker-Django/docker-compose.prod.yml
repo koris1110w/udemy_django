@@ -1,0 +1,45 @@
+version: "3.7"
+
+services:
+   web:
+      build: ./django_project
+      command: gunicorn project.wsgi:application --bind 0.0.0.0:8000
+      # command: bash -c "python manage.py collectstatic --no-input --clear && python manage.py migrate && project.wsgi:application --bind 0.0.0.0:8000"
+      volumes:
+         - static_volume:/usr/src/app/static
+         - media_volume:/usr/src/app/media
+      expose:
+         - 8000
+      env_file:
+         - ./.env.dev
+      depends_on:
+         db:
+            condition: service_healthy
+
+   db:
+      image: postgres:15
+      volumes:
+         - postgres_data:/var/lib/postgresql/data/
+      healthcheck:
+         test: pg_isready -U "${SQL_USER:-user_name}" -d "${SQL_DATABASE:-db_name}" || exit 1
+         interval: 10s
+         timeout: 5s
+         retries: 5
+         start_period: 30s
+      env_file:
+         - ./.env.dev
+
+   nginx:
+      build: ./nginx
+      volumes:
+         - static_volume:/usr/src/app/static
+         - media_volume:/usr/src/app/media
+      ports:
+         - 1317:80
+      depends_on:
+         - web    
+
+volumes:
+   postgres_data:
+   static_volume:
+   media_volume:
